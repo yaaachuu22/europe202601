@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>歐洲行程 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;background:#f5f5f0;padding:1rem 1rem 3rem;max-width:680px;margin:0 auto}
+h2{font-size:18px;font-weight:600;margin-bottom:1.25rem;color:#1a1a1a}
+input,select,button{font-family:inherit}
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{border:1px solid #ddd;border-radius:8px;padding:6px 14px;font-size:13px;background:#fff;color:#666;cursor:pointer}
+.tab.active{border:2px solid #534AB7;color:#534AB7;font-weight:600;background:#fff}
+.city-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.city-flag{font-size:22px}
+.city-name{font-size:17px;font-weight:600}
+.city-meta{font-size:12px;color:#888;margin-left:auto;text-align:right}
+.flight-card{border:1px solid #C0DD97;border-radius:12px;background:#EAF3DE;padding:.85rem 1rem;margin-bottom:1rem}
+.flight-title{font-size:14px;font-weight:600;color:#3B6D11;margin-bottom:.4rem}
+.flight-row{font-size:12px;color:#3B6D11;margin-bottom:2px}
+.transport-card{border:1px solid #B5D4F4;border-radius:12px;background:#E6F1FB;padding:.85rem 1rem;margin-bottom:1rem}
+.transport-title{font-size:14px;font-weight:600;color:#0C447C;margin-bottom:2px}
+.transport-sub{font-size:12px;color:#185FA5;margin-bottom:6px}
+.tlinks{display:flex;gap:6px;flex-wrap:wrap}
+.tlink{font-size:12px;padding:4px 10px;border-radius:20px;background:#fff;border:1px solid #85B7EB;color:#185FA5;text-decoration:none}
+.warn-card{border:1px solid #FAC775;border-radius:12px;background:#FAEEDA;padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;color:#633806}
+.day-block{border:1px solid #e0e0e0;border-radius:12px;margin-bottom:.65rem;background:#fff}
+.day-header{display:flex;align-items:center;gap:8px;padding:.6rem 1rem;background:#f8f8f6;border-bottom:1px solid #e0e0e0;border-radius:12px 12px 0 0}
+.day-label{font-size:13px;font-weight:600;min-width:50px}
+.day-date{font-size:12px;color:#888}
+.day-badge{font-size:10px;padding:2px 7px;border-radius:10px;margin-left:4px}
+.badge-arrive{background:#E1F5EE;color:#085041}
+.badge-return{background:#FAECE7;color:#4A1B0C}
+.activities-wrap{padding:.65rem 1rem}
+.time-slot{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.time-input{width:72px;border:1px solid #ddd;border-radius:8px;padding:4px 5px;font-size:12px;background:#fff;color:#1a1a1a;text-align:center}
+.act-content{flex:1}
+.act-text{font-size:13px;color:#1a1a1a;line-height:1.4}
+.cat-badge{font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;margin-right:4px;display:inline-block;white-space:nowrap}
+.cat-sight{background:#E1F5EE;color:#085041}
+.cat-food{background:#EEEDFE;color:#3C3489}
+.cat-adv{background:#FAECE7;color:#4A1B0C}
+.cat-shop{background:#FAEEDA;color:#633806}
+.cat-night{background:#FBEAF0;color:#4B1528}
+.cat-transport{background:#E6F1FB;color:#0C447C}
+.fixed-badge{font-size:10px;padding:1px 5px;border-radius:10px;background:#e0e0e0;color:#666;margin-left:4px;vertical-align:middle}
+.del-btn{border:none;background:transparent;cursor:pointer;color:#aaa;font-size:16px;padding:0 2px;flex-shrink:0}
+.add-row{display:flex;gap:5px;margin-top:.5rem;flex-wrap:wrap;align-items:center}
+.add-row input{border:1px solid #ddd;border-radius:8px;padding:6px 8px;font-size:13px;background:#fff;color:#1a1a1a}
+.add-row input.tf{width:72px;text-align:center}
+.add-row input.af{flex:1;min-width:100px}
+.add-row select{border:1px solid #ddd;border-radius:8px;padding:6px 6px;font-size:13px;background:#fff;color:#1a1a1a}
+.add-row button{border:1px solid #ccc;border-radius:8px;padding:6px 12px;font-size:13px;background:#fff;color:#1a1a1a;cursor:pointer}
+.empty-hint{font-size:12px;color:#aaa;padding:.2rem 0}
+.save-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-size:12px;color:#888;background:#fff;border-radius:8px;padding:.5rem .75rem;border:1px solid #e0e0e0}
+.save-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.save-dot.saving{background:#BA7517}
+.reset-btn{margin-left:auto;border:1px solid #ddd;border-radius:8px;padding:3px 10px;font-size:12px;background:#fff;color:#888;cursor:pointer}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:1rem}
+.metric{background:#fff;border-radius:8px;padding:.65rem .85rem;border:1px solid #e0e0e0}
+.metric-label{font-size:11px;color:#888;margin-bottom:3px}
+.metric-val{font-size:20px;font-weight:600}
+.prog-bar{height:7px;border-radius:4px;background:#eee;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;border-radius:4px}
+</style>
+</head>
+<body>
+<h2>✈️ 歐洲 30 天行程 2026</h2>
+<div class="save-bar">
+  <span class="save-dot" id="save-dot"></span>
+  <span id="save-label">載入中…</span>
+  <button class="reset-btn" onclick="resetAll()">重置資料</button>
+</div>
+<div class="tabs" id="tabs"></div>
+<div id="sections"></div>
+
+<script>
+const SKEY='europe2026';
+const CATS=[
+  {val:'sight',label:'觀光',cls:'cat-sight'},
+  {val:'food',label:'美食',cls:'cat-food'},
+  {val:'adv',label:'冒險',cls:'cat-adv'},
+  {val:'shop',label:'購物',cls:'cat-shop'},
+  {val:'night',label:'夜生活',cls:'cat-night'},
+  {val:'transport',label:'交通',cls:'cat-transport'},
+];
+const CC={sight:'#1D9E75',food:'#534AB7',adv:'#D85A30',shop:'#BA7517',night:'#D4537E',transport:'#378ADD'};
+
+function addDays(base,n){const d=new Date(base);d.setDate(d.getDate()+n);return d;}
+function fmt(d){return d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'});}
+
+const CITIES=[
+  {
+    id:'ams',name:'阿姆斯特丹',flag:'🇳🇱',start:'2026-06-23',days:2,meta:'史基浦機場 05:10 抵達',
+    flightIn:{title:'✈️ 抵達航班 KE5925',rows:['首爾仁川(ICN) 22:25 出發','阿姆斯特丹史基浦(AMS) 06/23 05:10 抵達','免費行李：1 件']},
+    airportWarn:'⚠️ 凌晨抵達，建議搭 Sprinter 火車進市區（約 15 分鐘）',
+    airportLinks:[{label:'NS 火車時刻',url:'https://www.ns.nl/en'},{label:'Connexxion 巴士',url:'https://www.connexxion.nl/en'}],
+    dayBadges:{0:'arrive'},
+  },
+  {
+    id:'rot',name:'鹿特丹',flag:'🇳🇱',start:'2026-06-25',days:5,meta:'住朋友家',
+    before:{title:'🚂 阿姆斯特丹 → 鹿特丹',sub:'約 40 分鐘，票尚未購買',links:[{label:'NS 荷蘭國鐵',url:'https://www.ns.nl/en'},{label:'Trainline',url:'https://www.thetrainline.com'},{label:'Omio',url:'https://www.omio.com'}]},
+  },
+  {
+    id:'bru',name:'布魯塞爾',flag:'🇧🇪',start:'2026-06-30',days:10,meta:'火車總站附近',
+    before:{title:'🚂 鹿特丹 → 布魯塞爾',sub:'約 1.5 小時，票尚未購買',links:[{label:'SNCB 比利時國鐵',url:'https://www.sncb.be/en'},{label:'Trainline',url:'https://www.thetrainline.com'},{label:'Omio',url:'https://www.omio.com'}]},
+    dayBadges:{0:'arrive'},
+  },
+  {
+    id:'par',name:'巴黎',flag:'🇫🇷',start:'2026-07-10',days:13,meta:'市中心',
+    before:{title:'🚂 布魯塞爾 → 巴黎',sub:'Thalys/Eurostar 約 1.5 小時，票尚未購買',links:[{label:'Eurostar',url:'https://www.eurostar.com'},{label:'SNCF',url:'https://www.sncf-connect.com'},{label:'Trainline',url:'https://www.thetrainline.com'}]},
+    dayBadges:{0:'arrive',12:'return'},
+    flightOut:{title:'✈️ 回程航班 KE5902',rows:['巴黎戴高樂(CDG) 7/22 14:40 出發 — 2E 航廈','首爾仁川(ICN) 7/23 09:35 抵達','轉 KE2027 → 桃園(TPE) 17:50 抵達']},
+    returnWarn:'⚠️ 7/22 回程日 — 建議最晚 11:00 前出發往戴高樂機場（RER B 約 35 分鐘）',
+  },
+  {id:'summary',name:'📋 總覽',flag:'',start:null,days:0},
+];
+
+const DEFAULT={
+  ams:[
+    {activities:[
+      {time:'05:10',text:'抵達史基浦機場 (KE5925)',cat:'transport',fixed:true},
+      {time:'06:00',text:'搭 Sprinter 火車進阿姆斯特丹市區',cat:'transport',fixed:false},
+      {time:'10:00',text:'梵谷博物館 Van Gogh Museum（建議提前預約）',cat:'sight',fixed:false},
+    ]},
+    {activities:[
+      {time:'',text:'前往鹿特丹（阿姆斯特丹中央車站搭 Intercity 約 40 分鐘）',cat:'transport',fixed:false},
+    ]},
+  ],
+  rot:Array.from({length:5},()=>({activities:[]})),
+  bru:[
+    {activities:[]},
+    {activities:[{time:'',text:'休息日 — 養精蓄銳備戰演唱會',cat:'adv',fixed:false}]},
+    {activities:[{time:'19:00',text:"🎤 BTS WORLD TOUR 'ARIRANG' — King Baudouin Stadium",cat:'night',fixed:true}]},
+    ...Array.from({length:7},()=>({activities:[]})),
+  ],
+  par:[
+    ...Array.from({length:12},()=>({activities:[]})),
+    {activities:[
+      {time:'11:00',text:'出發前往戴高樂機場 (RER B)',cat:'transport',fixed:true},
+      {time:'14:40',text:'KE5902 起飛 → 首爾仁川',cat:'transport',fixed:true},
+    ]},
+  ],
+};
+
+let state={};
+let active='ams';
+let saveTimer=null;
+
+function loadState(){
+  setSaveStatus('loading');
+  try{
+    const raw=localStorage.getItem(SKEY);
+    state=raw?JSON.parse(raw):JSON.parse(JSON.stringify(DEFAULT));
+  }catch(e){
+    state=JSON.parse(JSON.stringify(DEFAULT));
+  }
+  setSaveStatus('saved');
+  renderTabs();
+  renderSec();
+}
+
+function saveState(){
+  setSaveStatus('saving');
+  try{
+    localStorage.setItem(SKEY,JSON.stringify(state));
+    setSaveStatus('saved');
+  }catch(e){setSaveStatus('error');}
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveState,600);
+}
+
+function setSaveStatus(s){
+  const dot=document.getElementById('save-dot');
+  const lbl=document.getElementById('save-label');
+  if(s==='saving'){dot.className='save-dot saving';lbl.textContent='儲存中…';}
+  else if(s==='saved'){dot.className='save-dot';lbl.textContent='已自動儲存';}
+  else if(s==='loading'){dot.className='save-dot saving';lbl.textContent='載入中…';}
+  else{dot.className='save-dot';lbl.textContent='儲存失敗';}
+}
+
+function resetAll(){
+  if(!confirm('確定要重置所有行程資料嗎？'))return;
+  state=JSON.parse(JSON.stringify(DEFAULT));
+  saveState();
+  renderSec();
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=CITIES.map(c=>`
+    <button class="tab ${c.id===active?'active':''}" onclick="sw('${c.id}')">${c.flag}${c.name}</button>`).join('');
+}
+function sw(id){active=id;renderTabs();renderSec();}
+function catInfo(val){return CATS.find(c=>c.val===val)||CATS[0];}
+
+function renderSec(){
+  const sec=document.getElementById('sections');
+  if(active==='summary'){sec.innerHTML=buildSummary();return;}
+  const city=CITIES.find(c=>c.id===active);
+  let h='';
+  if(city.flightIn){
+    h+=`<div class="flight-card"><div class="flight-title">${city.flightIn.title}</div>${city.flightIn.rows.map(r=>`<div class="flight-row">• ${r}</div>`).join('')}</div>`;
+  }
+  if(city.airportWarn){
+    const lks=city.airportLinks.map(l=>`<a class="tlink" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('');
+    h+=`<div class="warn-card">${city.airportWarn}<div class="tlinks" style="margin-top:6px">${lks}</div></div>`;
+  }
+  if(city.before){
+    const lks=city.before.links.map(l=>`<a class="tlink" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('');
+    h+=`<div class="transport-card"><div class="transport-title">${city.before.title}</div><div class="transport-sub">${city.before.sub}</div><div class="tlinks">${lks}</div></div>`;
+  }
+  const endDate=fmt(addDays(new Date(city.start),city.days-1));
+  h+=`<div class="city-header"><span class="city-flag">${city.flag}</span><span class="city-name">${city.name}</span><div class="city-meta">${fmt(new Date(city.start))} – ${endDate}<br>${city.meta||''}</div></div>`;
+  for(let i=0;i<city.days;i++){
+    const d=addDays(new Date(city.start),i);
+    const badge=city.dayBadges?.[i];
+    const badgeHtml=badge?`<span class="day-badge badge-${badge}">${badge==='arrive'?'抵達日':'回程日 ✈️'}</span>`:'';
+    const acts=(state[city.id]?.[i]?.activities)||[];
+    const actsHtml=acts.length?acts.map((a,j)=>{
+      const cat=catInfo(a.cat);
+      return `<div class="time-slot">
+        <input class="time-input" type="time" value="${a.time||''}" onchange="upTime('${city.id}',${i},${j},this.value)"/>
+        <div class="act-content"><span class="cat-badge ${cat.cls}">${cat.label}</span><span class="act-text">${a.text}</span>${a.fixed?'<span class="fixed-badge">固定</span>':''}</div>
+        ${a.fixed?'<span style="width:18px"></span>':`<button class="del-btn" onclick="delAct('${city.id}',${i},${j})">✕</button>`}
+      </div>`;
+    }).join(''):'<p class="empty-hint">尚未新增活動</p>';
+    const catOpts=CATS.map(c=>`<option value="${c.val}">${c.label}</option>`).join('');
+    h+=`<div class="day-block">
+      <div class="day-header">
+        <span class="day-label">第 ${i+1} 天</span>
+        <span class="day-date">${fmt(d)}</span>${badgeHtml}
+      </div>
+      <div class="activities-wrap">
+        ${actsHtml}
+        <div class="add-row">
+          <input class="tf" id="t-${city.id}-${i}" type="time"/>
+          <input class="af" id="a-${city.id}-${i}" placeholder="地點或活動…" onkeydown="if(event.key==='Enter')addAct('${city.id}',${i})"/>
+          <select id="c-${city.id}-${i}">${catOpts}</select>
+          <button onclick="addAct('${city.id}',${i})">新增</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(city.flightOut){
+    h+=`<div class="flight-card" style="margin-top:.75rem"><div class="flight-title">${city.flightOut.title}</div>${city.flightOut.rows.map(r=>`<div class="flight-row">• ${r}</div>`).join('')}</div>`;
+    h+=`<div class="warn-card">${city.returnWarn}</div>`;
+  }
+  sec.innerHTML=h;
+}
+
+function addAct(cid,di){
+  const t=document.getElementById(`t-${cid}-${di}`).value;
+  const a=document.getElementById(`a-${cid}-${di}`).value.trim();
+  const c=document.getElementById(`c-${cid}-${di}`).value;
+  if(!a)return;
+  if(!state[cid][di])state[cid][di]={activities:[]};
+  state[cid][di].activities.push({time:t,text:a,cat:c,fixed:false});
+  state[cid][di].activities.sort((x,y)=>(x.time||'99:99').localeCompare(y.time||'99:99'));
+  scheduleSave();renderSec();
+}
+function delAct(cid,di,ai){state[cid][di].activities.splice(ai,1);scheduleSave();renderSec();}
+function upTime(cid,di,ai,v){
+  state[cid][di].activities[ai].time=v;
+  state[cid][di].activities.sort((x,y)=>(x.time||'99:99').localeCompare(y.time||'99:99'));
+  scheduleSave();renderSec();
+}
+
+function buildSummary(){
+  let total=0,filled=0,totalDays=0;
+  const byCat={};
+  CITIES.filter(c=>c.id!=='summary').forEach(city=>{
+    (state[city.id]||[]).forEach(day=>{
+      totalDays++;
+      if(day.activities.length)filled++;
+      day.activities.forEach(a=>{total++;byCat[a.cat]=(byCat[a.cat]||0)+1;});
+    });
+  });
+  const pct=totalDays?Math.round(filled/totalDays*100):0;
+  const bars=CATS.map(cat=>{
+    const n=byCat[cat.val]||0;if(!n)return'';
+    const w=total?Math.round(n/total*100):0;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="font-size:12px;color:#888;min-width:50px">${cat.label}</span>
+      <div class="prog-bar" style="flex:1"><div class="prog-fill" style="width:${w}%;background:${CC[cat.val]}"></div></div>
+      <span style="font-size:12px;color:#888;min-width:28px">${n} 項</span>
+    </div>`;
+  }).join('');
+  const cityRows=CITIES.filter(c=>c.id!=='summary').map(city=>{
+    const acts=(state[city.id]||[]).flatMap(d=>d.activities);
+    const preview=acts.slice(0,4).map(a=>{const cat=catInfo(a.cat);return`<div style="font-size:12px;color:#888;margin-bottom:1px">${a.time?a.time+' ':''}<span class="cat-badge ${cat.cls}">${cat.label}</span>${a.text}</div>`;}).join('');
+    return `<div style="border:1px solid #e0e0e0;border-radius:12px;padding:.75rem 1rem;margin-bottom:.65rem;background:#fff">
+      <div style="font-size:14px;font-weight:600;margin-bottom:.4rem">${city.flag}${city.name} <span style="font-size:12px;color:#888;font-weight:400">— ${acts.length} 項 / ${city.days} 天</span></div>
+      ${preview||'<div style="font-size:12px;color:#aaa">尚未規劃</div>'}
+      ${acts.length>4?`<div style="font-size:11px;color:#aaa;margin-top:2px">…還有 ${acts.length-4} 項</div>`:''}
+    </div>`;
+  }).join('');
+  return `<div class="summary-grid">
+    <div class="metric"><div class="metric-label">旅行總天數</div><div class="metric-val">30</div></div>
+    <div class="metric"><div class="metric-label">已規劃天數</div><div class="metric-val">${filled}</div></div>
+    <div class="metric"><div class="metric-label">活動總數</div><div class="metric-val">${total}</div></div>
+    <div class="metric"><div class="metric-label">規劃進度</div><div class="metric-val">${pct}%</div></div>
+  </div>
+  <div style="margin-bottom:1.25rem">${bars}</div>
+  <h3 style="margin-bottom:.75rem;font-size:15px;font-weight:600">各城市概覽</h3>${cityRows}`;
+}
+
+loadState();
+</script>
+</body>
+</html>
