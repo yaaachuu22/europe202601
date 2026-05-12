@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>歐洲行程 2026</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;background:#f5f5f0;padding:1rem 1rem 3rem;max-width:680px;margin:0 auto}
@@ -11,9 +12,8 @@ input,select,button{font-family:inherit}
 .tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
 .tab{border:1px solid #ddd;border-radius:8px;padding:6px 14px;font-size:13px;background:#fff;color:#666;cursor:pointer}
 .tab.active{border:2px solid #534AB7;color:#534AB7;font-weight:600}
-/* transit pass card */
 .pass-section{margin-bottom:1rem}
-.pass-title{font-size:13px;font-weight:600;color:#444;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.pass-title{font-size:13px;font-weight:600;color:#444;margin-bottom:6px}
 .pass-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px;margin-bottom:6px}
 .pass-card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:.6rem .75rem}
 .pass-name{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
@@ -71,6 +71,7 @@ input,select,button{font-family:inherit}
 .empty-hint{font-size:12px;color:#aaa;padding:.2rem 0}
 .save-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;font-size:12px;color:#888;background:#fff;border-radius:8px;padding:.5rem .75rem;border:1px solid #e0e0e0}
 .save-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.save-dot.saving{background:#BA7517}
 .reset-btn{margin-left:auto;border:1px solid #ddd;border-radius:8px;padding:3px 10px;font-size:12px;background:#fff;color:#888;cursor:pointer}
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:1rem}
 .metric{background:#fff;border-radius:8px;padding:.65rem .85rem;border:1px solid #e0e0e0}
@@ -83,13 +84,14 @@ input,select,button{font-family:inherit}
 <body>
 <h2>✈️ 歐洲 30 天行程 2026</h2>
 <div class="save-bar">
-  <span class="save-dot"></span>
-  <span>已自動儲存（預覽版）</span>
+  <span class="save-dot" id="save-dot"></span>
+  <span id="save-label">載入中…</span>
   <button class="reset-btn" onclick="resetAll()">重置資料</button>
 </div>
 <div class="tabs" id="tabs"></div>
 <div id="sections"></div>
 <script>
+const SKEY='europe2026v4';
 const CATS=[
   {val:'sight',label:'觀光',cls:'cat-sight'},
   {val:'food',label:'美食',cls:'cat-food'},
@@ -107,45 +109,25 @@ const EXP_CATS=[
 ];
 const EXP_CITIES=['阿姆斯特丹','鹿特丹','布魯塞爾','巴黎'];
 
-function addDays(b,n){const d=new Date(b);d.setDate(d.getDate()+n);return d;}
-function fmt(d){return d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'});}
-function mapUrl(t){return'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t);}
-
 const TRANSIT={
-  ams:{
-    title:'🚌 阿姆斯特丹交通建議',
-    passes:[
-      {name:'GVB 1日票',price:'€10',desc:'地鐵/電車/巴士無限搭，每日上限 €10（直接刷卡也是此價）',url:'https://www.gvb.nl/en/tickets'},
-      {name:'GVB 2日票',price:'€16',desc:'48小時無限搭，適合停留2天',url:'https://www.gvb.nl/en/tickets'},
-      {name:'I amsterdam City Card',price:'€65起',desc:'含交通＋70+博物館免費入場＋運河遊船，24/48/72小時',url:'https://www.iamsterdam.com/en/i-amsterdam-city-card'},
-    ],
-    tip:'💡 建議：只停2天可直接刷信用卡（OVpay），單日上限 €10，不用另買票。去史基浦機場需搭 NS 火車，需另買票（單程 €5.60）。'
-  },
-  rot:{
-    title:'🚌 鹿特丹交通建議',
-    passes:[
-      {name:'OVpay 刷卡',price:'按距離計費',desc:'直接用信用卡/金融卡感應，搭地鐵/電車/巴士，無需另購票',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
-      {name:'RET 1日票',price:'€9',desc:'無限搭市區地鐵、電車、巴士',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
-    ],
-    tip:'💡 鹿特丹住朋友家，交通需求較少。短途直接刷卡最方便。'
-  },
-  bru:{
-    title:'🚌 布魯塞爾交通建議',
-    passes:[
-      {name:'STIB 單程',price:'€2.40',desc:'60分鐘內免費換乘，每日上限 €8.50（刷卡）',url:'https://www.stib-mivb.be'},
-      {name:'Brussels Card + STIB',price:'€47.90起/24h',desc:'含49個博物館免費入場＋無限STIB交通（24/48/72小時）',url:'https://visit.brussels/en/article/the-brussels-card'},
-    ],
-    tip:'💡 停留10天建議買多次 STIB 單程票，或有計畫大量逛博物館則考慮 Brussels Card。'
-  },
-  par:{
-    title:'🚌 巴黎交通建議',
-    passes:[
-      {name:'Navigo 週票',price:'€32.40/週',desc:'週一至週日無限搭地鐵/RER/巴士/電車，含機場（CDG/Orly）',url:'https://www.navigo.fr'},
-      {name:'Navigo 月票',price:'€90.80/月',desc:'整月無限搭，7/10抵達可買7月份月票（至7/31）',url:'https://www.navigo.fr'},
-      {name:'單程票',price:'€2.55',desc:'若搭乘次數少可考慮，10張一組優惠',url:'https://www.ratp.fr/en/titres-et-tarifs'},
-    ],
-    tip:'💡 強烈建議買 Navigo 週票（€32.40），含 CDG 機場 RER B，搭一趟機場來回就回本。需先辦 Navigo Découverte 卡（€5）。'
-  }
+  ams:{passes:[
+    {name:'GVB 1日票',price:'€10',desc:'地鐵/電車/巴士無限搭，直接刷卡也是此價，每日上限€10',url:'https://www.gvb.nl/en/tickets'},
+    {name:'GVB 2日票',price:'€16',desc:'48小時無限搭，適合停留2天',url:'https://www.gvb.nl/en/tickets'},
+    {name:'I amsterdam City Card',price:'€65起',desc:'含交通＋70+博物館免費＋運河遊船，24/48/72小時',url:'https://www.iamsterdam.com/en/i-amsterdam-city-card'},
+  ],tip:'💡 只停2天可直接刷信用卡（OVpay），單日上限€10。去史基浦機場需搭NS火車另買票（單程€5.60）。'},
+  rot:{passes:[
+    {name:'OVpay 刷卡',price:'按距離計費',desc:'直接用信用卡感應，搭地鐵/電車/巴士，無需另購票',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
+    {name:'RET 1日票',price:'€9',desc:'無限搭市區地鐵、電車、巴士',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
+  ],tip:'💡 鹿特丹住朋友家，短途直接刷卡最方便。'},
+  bru:{passes:[
+    {name:'STIB 單程',price:'€2.40',desc:'60分鐘內免費換乘，每日刷卡上限€8.50',url:'https://www.stib-mivb.be'},
+    {name:'Brussels Card + STIB',price:'€47.90起/24h',desc:'含49個博物館免費＋無限STIB交通（24/48/72小時）',url:'https://visit.brussels/en/article/the-brussels-card'},
+  ],tip:'💡 停留10天建議多次買STIB單程，有計畫大量逛博物館則考慮Brussels Card。'},
+  par:{passes:[
+    {name:'Navigo 週票',price:'€32.40/週',desc:'週一至週日無限搭地鐵/RER/巴士，含CDG/Orly機場',url:'https://www.navigo.fr'},
+    {name:'Navigo 月票',price:'€90.80/月',desc:'整月無限搭，7/10抵達可買7月份月票（至7/31）',url:'https://www.navigo.fr'},
+    {name:'單程票',price:'€2.55',desc:'搭乘次數少可考慮',url:'https://www.ratp.fr/en/titres-et-tarifs'},
+  ],tip:'💡 強烈建議買Navigo週票（€32.40），含CDG機場RER B，來回機場就回本。需先辦Navigo Découverte卡（€5）。'},
 };
 
 const TRAIN_ROUTES=[
@@ -153,6 +135,10 @@ const TRAIN_ROUTES=[
   {from:'鹿特丹',to:'布魯塞爾',duration:'1.5小時',price:'€19–45',priceNote:'Intercity Direct，需訂位',links:[{label:'SNCB 比利時國鐵',url:'https://www.sncb.be/en'},{label:'Trainline',url:'https://www.thetrainline.com'}]},
   {from:'布魯塞爾',to:'巴黎',duration:'1.5小時',price:'€29–99',priceNote:'Thalys/Eurostar，越早越便宜',links:[{label:'Eurostar',url:'https://www.eurostar.com'},{label:'SNCF',url:'https://www.sncf-connect.com'}]},
 ];
+
+function addDays(b,n){const d=new Date(b);d.setDate(d.getDate()+n);return d;}
+function fmt(d){return d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'});}
+function mapUrl(t){return'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t);}
 
 const CITIES=[
   {id:'ams',name:'阿姆斯特丹',flag:'🇳🇱',start:'2026-06-23',days:2,meta:'史基浦機場 05:10 抵達',transit:'ams',
@@ -207,12 +193,7 @@ const DEFAULT={
     {activities:[
       {time:'',text:'Celia Darling Vintage — 第9區，飾品CP值最高',cat:'shop',fixed:false,mapQuery:'Celia Darling Vintage Paris',ticketUrl:''},
     ]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
+    ...Array.from({length:6},()=>({activities:[]})),
     {activities:[
       {time:'11:00',text:'出發前往戴高樂機場 (RER B)',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport',ticketUrl:''},
       {time:'14:40',text:'KE5902 起飛 → 首爾仁川',cat:'transport',fixed:true,mapQuery:'',ticketUrl:''},
@@ -220,11 +201,38 @@ const DEFAULT={
   ],
 };
 
-let state=JSON.parse(JSON.stringify(DEFAULT));
+let state={};
 let budget={limit:0,expenses:[]};
 let active='ams';
+let saveTimer=null;
 
-function resetAll(){if(!confirm('確定要重置嗎？'))return;state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};renderSec();}
+function loadState(){
+  setSaveStatus('loading');
+  try{
+    const raw=localStorage.getItem(SKEY);
+    if(raw){const p=JSON.parse(raw);state=p.state||p;budget=p.budget||{limit:0,expenses:[]};}
+    else{state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};}
+  }catch(e){state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};}
+  setSaveStatus('saved');renderTabs();renderSec();
+}
+function saveState(){
+  setSaveStatus('saving');
+  try{localStorage.setItem(SKEY,JSON.stringify({state,budget}));setSaveStatus('saved');}
+  catch(e){setSaveStatus('error');}
+}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveState,600);}
+function setSaveStatus(s){
+  const dot=document.getElementById('save-dot'),lbl=document.getElementById('save-label');
+  if(s==='saving'){dot.className='save-dot saving';lbl.textContent='儲存中…';}
+  else if(s==='saved'){dot.className='save-dot';lbl.textContent='已自動儲存';}
+  else if(s==='loading'){dot.className='save-dot saving';lbl.textContent='載入中…';}
+  else{dot.className='save-dot';lbl.textContent='儲存失敗';}
+}
+function resetAll(){
+  if(!confirm('確定要重置所有行程與記帳資料嗎？'))return;
+  state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};
+  saveState();renderSec();
+}
 function renderTabs(){
   document.getElementById('tabs').innerHTML=CITIES.map(c=>`
     <button class="tab ${c.id===active?'active':''}" onclick="sw('${c.id}')">${c.flag}${c.name}</button>`).join('');
@@ -232,33 +240,15 @@ function renderTabs(){
 function sw(id){active=id;renderTabs();renderSec();}
 function catInfo(val){return CATS.find(c=>c.val===val)||CATS[0];}
 
-function renderTransitSection(transitKey){
-  const t=TRANSIT[transitKey];if(!t)return'';
-  const cards=t.passes.map(p=>`
-    <div class="pass-card">
-      <div class="pass-name">${p.name}</div>
-      <div class="pass-price">${p.price}</div>
-      <div class="pass-desc">${p.desc}</div>
-      <a class="pass-link" href="${p.url}" target="_blank">購買/了解更多 ↗</a>
-    </div>`).join('');
-  return `<div class="pass-section">
-    <div class="pass-title">🚌 交通票券建議</div>
-    <div class="pass-grid">${cards}</div>
-    <div class="warn-card" style="font-size:12px">${t.tip}</div>
-  </div>`;
+function renderTransitSection(key){
+  const t=TRANSIT[key];if(!t)return'';
+  const cards=t.passes.map(p=>`<div class="pass-card"><div class="pass-name">${p.name}</div><div class="pass-price">${p.price}</div><div class="pass-desc">${p.desc}</div><a class="pass-link" href="${p.url}" target="_blank">了解更多 ↗</a></div>`).join('');
+  return `<div class="pass-section"><div class="pass-title">🚌 交通票券建議</div><div class="pass-grid">${cards}</div><div class="warn-card" style="font-size:12px">${t.tip}</div></div>`;
 }
-
 function renderTrainCard(idx){
   const r=TRAIN_ROUTES[idx];if(r===undefined)return'';
   const lks=r.links.map(l=>`<a class="tlink" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('');
-  return `<div class="train-card">
-    <div class="train-header">
-      <span class="train-title">🚂 ${r.from} → ${r.to}　約 ${r.duration}</span>
-      <span class="train-price">票價約 ${r.price}</span>
-    </div>
-    <div class="train-sub">⚠️ 票尚未購買 — ${r.priceNote}</div>
-    <div class="tlinks">${lks}</div>
-  </div>`;
+  return `<div class="train-card"><div class="train-header"><span class="train-title">🚂 ${r.from} → ${r.to}　約 ${r.duration}</span><span class="train-price">約 ${r.price}</span></div><div class="train-sub">⚠️ 票尚未購買 — ${r.priceNote}</div><div class="tlinks">${lks}</div></div>`;
 }
 
 function renderSec(){
@@ -267,19 +257,15 @@ function renderSec(){
   if(active==='summary'){sec.innerHTML=buildSummary();return;}
   const city=CITIES.find(c=>c.id===active);
   let h='';
-  if(city.flightIn){
-    h+=`<div class="flight-card"><div class="flight-title">${city.flightIn.title}</div>${city.flightIn.rows.map(r=>`<div class="flight-row">• ${r}</div>`).join('')}</div>`;
-  }
+  if(city.flightIn){h+=`<div class="flight-card"><div class="flight-title">${city.flightIn.title}</div>${city.flightIn.rows.map(r=>`<div class="flight-row">• ${r}</div>`).join('')}</div>`;}
   if(city.airportWarn){
     const lks=city.airportLinks.map(l=>`<a class="tlink" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('');
     h+=`<div class="warn-card">${city.airportWarn}<div class="tlinks" style="margin-top:6px">${lks}</div></div>`;
   }
   if(city.trainIdx!==undefined)h+=renderTrainCard(city.trainIdx);
   if(city.transit)h+=renderTransitSection(city.transit);
-
   const endDate=fmt(addDays(new Date(city.start),city.days-1));
   h+=`<div class="city-header"><span class="city-flag">${city.flag}</span><span class="city-name">${city.name}</span><div class="city-meta">${fmt(new Date(city.start))} – ${endDate}<br>${city.meta||''}</div></div>`;
-
   for(let i=0;i<city.days;i++){
     const d=addDays(new Date(city.start),i);
     const badge=city.dayBadges?.[i];
@@ -301,16 +287,13 @@ function renderSec(){
     }).join(''):'<p class="empty-hint">尚未新增活動</p>';
     const catOpts=CATS.map(c=>`<option value="${c.val}">${c.label}</option>`).join('');
     h+=`<div class="day-block">
-      <div class="day-header">
-        <span class="day-label">第 ${i+1} 天</span>
-        <span class="day-date">${fmt(d)}</span>${badgeHtml}
-      </div>
+      <div class="day-header"><span class="day-label">第 ${i+1} 天</span><span class="day-date">${fmt(d)}</span>${badgeHtml}</div>
       <div class="activities-wrap">
         ${actsHtml}
         <div class="add-section">
           <div class="add-row">
             <input class="tf" id="t-${city.id}-${i}" type="time"/>
-            <input class="af" id="a-${city.id}-${i}" placeholder="地點或活動名稱…"/>
+            <input class="af" id="a-${city.id}-${i}" placeholder="地點或活動名稱…" onkeydown="if(event.key==='Enter')addAct('${city.id}',${i})"/>
             <select id="c-${city.id}-${i}">${catOpts}</select>
           </div>
           <div class="add-row">
@@ -337,13 +320,13 @@ function addAct(cid,di){
   if(!state[cid][di])state[cid][di]={activities:[]};
   state[cid][di].activities.push({time:t,text:a,cat:c,fixed:false,mapQuery:a,ticketUrl:tk});
   state[cid][di].activities.sort((x,y)=>(x.time||'99:99').localeCompare(y.time||'99:99'));
-  renderSec();
+  scheduleSave();renderSec();
 }
-function delAct(cid,di,ai){state[cid][di].activities.splice(ai,1);renderSec();}
+function delAct(cid,di,ai){state[cid][di].activities.splice(ai,1);scheduleSave();renderSec();}
 function upTime(cid,di,ai,v){
   state[cid][di].activities[ai].time=v;
   state[cid][di].activities.sort((x,y)=>(x.time||'99:99').localeCompare(y.time||'99:99'));
-  renderSec();
+  scheduleSave();renderSec();
 }
 
 function buildBudget(){
@@ -371,7 +354,7 @@ function buildBudget(){
     <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">旅程總預算</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem">
       <span style="font-size:13px;color:#888">預算上限 €</span>
-      <input type="number" id="bl" value="${budget.limit||''}" placeholder="例如 3000" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px" oninput="budget.limit=this.value;renderSec()"/>
+      <input type="number" id="bl" value="${budget.limit||''}" placeholder="例如 3000" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px" oninput="budget.limit=this.value;scheduleSave();renderSec()"/>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:.75rem">
       <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem"><div style="font-size:11px;color:#888;margin-bottom:2px">已花費</div><div style="font-size:18px;font-weight:700;color:#E24B4A">€${total.toFixed(2)}</div></div>
@@ -388,7 +371,7 @@ function buildBudget(){
       <input id="ea" type="number" placeholder="金額 (EUR)" step="0.01" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:1;min-width:100px"/>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
-      <input id="edesc" placeholder="備註" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:2;min-width:150px"/>
+      <input id="edesc" placeholder="備註" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:2;min-width:150px" onkeydown="if(event.key==='Enter')addExp()"/>
       <select id="ecat" style="border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-size:13px;flex:1">${catOpts}</select>
       <select id="ecity" style="border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-size:13px;flex:1">${cityOpts}</select>
     </div>
@@ -407,9 +390,9 @@ function addExp(){
   const date=document.getElementById('ed').value;
   if(!a||parseFloat(a)<=0)return;
   budget.expenses.push({amount:parseFloat(a),desc,cat,city,date});
-  renderSec();
+  scheduleSave();renderSec();
 }
-function delExp(i){budget.expenses.splice(i,1);renderSec();}
+function delExp(i){budget.expenses.splice(i,1);scheduleSave();renderSec();}
 
 function buildSummary(){
   let total=0,filled=0,totalDays=0;
@@ -444,7 +427,7 @@ function buildSummary(){
   <h3 style="margin-bottom:.75rem;font-size:15px;font-weight:600">各城市概覽</h3>${cityRows}`;
 }
 
-renderTabs();renderSec();
+loadState();
 </script>
 </body>
 </html>
