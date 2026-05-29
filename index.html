@@ -91,7 +91,7 @@ input,select,button{font-family:inherit}
 <div class="tabs" id="tabs"></div>
 <div id="sections"></div>
 <script>
-const SKEY='europe2026v5';
+const SKEY='europe2026v8';
 const CATS=[
   {val:'sight',label:'觀光',cls:'cat-sight'},
   {val:'food',label:'美食',cls:'cat-food'},
@@ -108,7 +108,6 @@ const EXP_CATS=[
   {val:'hotel',label:'住宿'},{val:'other',label:'其他'},
 ];
 const EXP_CITIES=['阿姆斯特丹','鹿特丹','布魯塞爾','巴黎'];
-
 const TRANSIT={
   ams:{passes:[
     {name:'GVB 1日票',price:'€10',desc:'地鐵/電車/巴士無限搭',url:'https://www.gvb.nl/en/tickets'},
@@ -117,171 +116,253 @@ const TRANSIT={
   rot:{passes:[
     {name:'OVpay 刷卡',price:'按距離計費',desc:'直接用信用卡感應，無需另購票',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
     {name:'RET 1日票',price:'€9',desc:'無限搭市區地鐵、電車、巴士',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
-  ],tip:'💡 住朋友家，短途直接刷卡最方便。'},
+  ],tip:'💡 住朋友家，短途直接刷卡最方便。離中央車站步行約30分鐘，搭車約8–10分鐘。'},
   bru:{passes:[
     {name:'STIB 單程',price:'€2.40',desc:'60分鐘內免費換乘，每日刷卡上限€8.50',url:'https://www.stib-mivb.be'},
     {name:'Brussels Card + STIB',price:'€47.90起/24h',desc:'含49個博物館免費＋無限STIB交通',url:'https://visit.brussels/en/article/the-brussels-card'},
-  ],tip:'💡 停留12天建議多次買STIB單程票最划算。'},
+  ],tip:'💡 停留14天建議多次買STIB單程票最划算。直接刷信用卡感應，記得進出都要感應！'},
   par:{passes:[
-    {name:'Navigo 週票',price:'€32.40/週',desc:'週一至週日無限搭，含CDG/Orly機場',url:'https://www.navigo.fr'},
-    {name:'Navigo 月票',price:'€90.80/月',desc:'整月無限搭，7/11抵達可買7月份月票',url:'https://www.navigo.fr'},
-    {name:'單程票',price:'€2.55',desc:'搭乘次數少可考慮',url:'https://www.ratp.fr/en/titres-et-tarifs'},
-  ],tip:'💡 強烈建議買Navigo週票（€32.40），含CDG機場RER B，來回機場就回本。需先辦Navigo Découverte卡（€5）。'},
+    {name:'7/13 到站直接辦 Navigo 週票',price:'€32.40＋卡費€5',desc:'週一到站剛好！在 Gare du Nord 辦 Navigo Découverte 卡（€5）＋加值週票，用到 7/19',url:'https://www.navigo.fr'},
+    {name:'7/20 起 單程票',price:'€2.55/次',desc:'7/20–7/22 只剩3天，買單程即可。7/22 去 CDG 機場單程 €5.90',url:'https://www.ratp.fr/en/titres-et-tarifs'},
+  ],tip:'💡 7/13（週一）抵達 Gare du Nord 後直接辦 Navigo Découverte 卡（€5）＋加值週票（€32.40），用到 7/19。7/20 起買單程票，7/22 回程機場單程 €5.90。總費用約 €47！'},
 };
-
 const TRAIN_ROUTES=[
   {from:'阿姆斯特丹',to:'鹿特丹',duration:'40分鐘',price:'€15–25',priceNote:'不需預訂，當天買票即可',links:[{label:'NS 荷蘭國鐵',url:'https://www.ns.nl/en'}]},
-  {from:'鹿特丹',to:'布魯塞爾',duration:'1.5小時',price:'€19–45',priceNote:'Intercity Direct，需訂位',links:[{label:'SNCB 比利時國鐵',url:'https://www.sncb.be/en'},{label:'Trainline',url:'https://www.thetrainline.com'}]},
-  {from:'布魯塞爾',to:'巴黎',duration:'1.5小時',price:'€29–99',priceNote:'Thalys/Eurostar，越早越便宜',links:[{label:'Eurostar',url:'https://www.eurostar.com'},{label:'SNCF',url:'https://www.sncf-connect.com'}]},
+  {from:'鹿特丹',to:'布魯塞爾',duration:'2h7m',price:'已購票 ✅',priceNote:'EC 9260｜PNR: QXFGLCM｜6/30 19:10出發',links:[{label:'SNCB 比利時國鐵',url:'https://www.sncb.be/en'}]},
+  {from:'布魯塞爾',to:'巴黎',duration:'2h58m',price:'已購票 ✅',priceNote:'OUIGO｜7/13 07:37出發｜參考編號：MAKGWH',links:[{label:'OUIGO 官網',url:'https://www.ouigo.com'}]},
 ];
-
 function addDays(b,n){const d=new Date(b);d.setDate(d.getDate()+n);return d;}
 function fmt(d){return d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'});}
 function mapUrl(t){return'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t);}
-
 const CITIES=[
   {id:'ams',name:'阿姆斯特丹',flag:'🇳🇱',start:'2026-06-23',days:1,meta:'當天遊，晚上移動至鹿特丹',transit:'ams',
     flightIn:{title:'✈️ 去程航班',rows:[
-      'KE2022｜桃園(TPE) 13:20 → 首爾仁川(ICN) 16:50',
-      'KE5925｜首爾仁川(ICN) 22:25 → 阿姆斯特丹(AMS) 06/23 05:10',
+      'KE2022｜桃園(TPE) 6/22 13:20 → 首爾仁川(ICN) 16:50',
+      'KE5925｜首爾仁川(ICN) 6/22 22:25 → 阿姆斯特丹(AMS) 6/23 05:10',
       '電腦代號：F3POQV｜免費行李：1件',
     ]},
     airportWarn:'⚠️ 凌晨抵達，建議搭 Sprinter 火車進市區（約15分鐘，€5.60）',
     airportLinks:[{label:'NS 火車時刻',url:'https://www.ns.nl/en'}],
     dayBadges:{0:'arrive'}},
   {id:'rot',name:'鹿特丹',flag:'🇳🇱',start:'2026-06-23',days:8,meta:'住朋友家',transit:'rot',trainIdx:0},
-  {id:'bru',name:'布魯塞爾',flag:'🇧🇪',start:'2026-06-30',days:12,meta:'火車總站附近',transit:'bru',trainIdx:1,dayBadges:{0:'arrive'}},
-  {id:'par',name:'巴黎',flag:'🇫🇷',start:'2026-07-11',days:12,meta:'市中心',transit:'par',trainIdx:2,
-    dayBadges:{0:'arrive',11:'return'},
+  {id:'bru',name:'布魯塞爾',flag:'🇧🇪',start:'2026-06-30',days:14,meta:'火車總站附近',transit:'bru',trainIdx:1,dayBadges:{0:'arrive'}},
+  {id:'par',name:'巴黎',flag:'🇫🇷',start:'2026-07-13',days:10,meta:'6 Place Saint-Michel（聖母院旁，拉丁區）',transit:'par',trainIdx:2,
+    dayBadges:{0:'arrive',9:'return'},
     flightOut:{title:'✈️ 回程航班',rows:[
       'KE5902｜巴黎戴高樂(CDG) 7/22 14:40 → 首爾仁川(ICN) 7/23 09:35（2E航廈）',
       'KE2027｜首爾仁川(ICN) 7/23 16:10 → 桃園(TPE) 17:50',
       '電腦代號：F3POQV｜免費行李：1件',
     ]},
-    returnWarn:'⚠️ 7/22 回程日 — 建議最晚 11:00 前出發往戴高樂機場（RER B 約35分鐘）'},
+    returnWarn:'⚠️ 7/22 回程日 — 建議最晚 11:00 前出發往戴高樂機場（RER B 約35分鐘，Saint-Michel直達CDG）'},
   {id:'budget',name:'💰 記帳',flag:'',start:null,days:0},
   {id:'summary',name:'📋 總覽',flag:'',start:null,days:0},
 ];
-
 const DEFAULT={
   ams:[
     {activities:[
       {time:'05:10',text:'抵達阿姆斯特丹史基浦機場 (KE5925)',cat:'transport',fixed:true,mapQuery:'Amsterdam Airport Schiphol',ticketUrl:''},
       {time:'05:30',text:'搭 Sprinter 火車進阿姆斯特丹市區 (€5.60，約15分鐘)',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
       {time:'06:00',text:'抵達阿姆斯特丹中央車站，寄放行李（寄物櫃在車站內）',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station lockers',ticketUrl:''},
-      {time:'08:30',text:'搭電車或步行前往梵谷博物館（Museumplein 6）— 電車 2/5 號到 Rijksmuseum 站',cat:'transport',fixed:false,mapQuery:'Van Gogh Museum Amsterdam',ticketUrl:''},
-      {time:'09:00',text:'梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內',cat:'sight',fixed:true,mapQuery:'Van Gogh Museum Museumplein 6 Amsterdam',ticketUrl:''},
+      {time:'08:30',text:'搭電車前往梵谷博物館（電車 2/5 號到 Rijksmuseum 站，步行5分鐘）',cat:'transport',fixed:false,mapQuery:'Van Gogh Museum Amsterdam',ticketUrl:''},
+      {time:'09:00',text:'🎨 梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內',cat:'sight',fixed:true,mapQuery:'Van Gogh Museum Museumplein 6 Amsterdam',ticketUrl:''},
       {time:'18:30',text:'搭 Intercity 火車前往鹿特丹（約40分鐘，每15分一班）',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
     ]},
   ],
   rot:[
+    // 6/23 抵達
     {activities:[
-      {time:'',text:'抵達鹿特丹，前往朋友家安頓',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
+      {time:'19:30',text:'抵達鹿特丹 Rotterdam Centraal，前往朋友家安頓',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
     ]},
+    // 6/24
     {activities:[
       {time:'10:00',text:'Conny Janssen Danst — 當代舞/芭蕾（預留，確認課表後購票）',cat:'dance',fixed:false,mapQuery:'Conny Janssen Danst Rotterdam Dolf Henkesplein 3',ticketUrl:'https://ticketshop.ticketmatic.com/conny_janssen_danst/shop-3?l=en'},
     ]},
+    // 6/25
     {activities:[
       {time:'10:00',text:'Conny Janssen Danst — 當代舞/芭蕾（預留，確認課表後購票）',cat:'dance',fixed:false,mapQuery:'Conny Janssen Danst Rotterdam Dolf Henkesplein 3',ticketUrl:'https://ticketshop.ticketmatic.com/conny_janssen_danst/shop-3?l=en'},
     ]},
+    // 6/26
     {activities:[
       {time:'10:00',text:'Conny Janssen Danst — 當代舞/芭蕾（預留，確認課表後購票）',cat:'dance',fixed:false,mapQuery:'Conny Janssen Danst Rotterdam Dolf Henkesplein 3',ticketUrl:'https://ticketshop.ticketmatic.com/conny_janssen_danst/shop-3?l=en'},
     ]},
-    {activities:[]},
+    // 6/27 Kröller-Müller
     {activities:[
-      {time:'07:30',text:'Rotterdam Centraal 出發 → Utrecht Centraal 轉車 → Ede-Wageningen（約1小時10分，NS火車）',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
-      {time:'08:45',text:'抵達 Ede-Wageningen，搭 Bus 108 往 Apeldoorn → 在 Otterlo Rotonde 下車',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:''},
-      {time:'09:30',text:'轉搭 Bus 106 進 De Hoge Veluwe 國家公園 → Kröller-Müller Museum 站下車',cat:'transport',fixed:false,mapQuery:'De Hoge Veluwe National Park Otterlo',ticketUrl:''},
-      {time:'10:00',text:'🎨 Kröller-Müller Museum — 梵谷第二大典藏（90幅）＋戶外雕塑公園｜公園票：E-ticket 2621042266｜美術館票：11490100276243',cat:'sight',fixed:true,mapQuery:'Kröller-Müller Museum Houtkampweg 6 Otterlo',ticketUrl:'https://krollermuller.nl/en/visit'},
-      {time:'10:30',text:'🚲 在公園入口借免費白色自行車，騎車穿梭森林探索雕塑公園',cat:'adv',fixed:false,mapQuery:'De Hoge Veluwe National Park bicycle',ticketUrl:''},
-      {time:'13:00',text:'美術館咖啡廳午餐（館內有自助餐廳，建議先逛再吃）',cat:'food',fixed:false,mapQuery:'Kröller-Müller Museum restaurant',ticketUrl:''},
-      {time:'15:00',text:'繼續欣賞戶外雕塑公園（Rodin、Giacometti 等 160 件作品）',cat:'sight',fixed:false,mapQuery:'Kröller-Müller Museum sculpture garden',ticketUrl:''},
-      {time:'16:30',text:'搭 Bus 106 離開國家公園 → Otterlo Rotonde 轉 Bus 108 → Ede-Wageningen',cat:'transport',fixed:false,mapQuery:'Otterlo Rotonde bus stop',ticketUrl:''},
-      {time:'17:30',text:'Ede-Wageningen 搭火車回 Rotterdam Centraal（轉 Utrecht，約1小時10分）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:'https://www.ns.nl/en'},
-      {time:'19:00',text:'抵達鹿特丹',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
+      {time:'07:31',text:'Rotterdam Centraal 出發 → Utrecht Centraal 轉車 → Ede-Wageningen（週六首班，約1h15m）',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
+      {time:'08:50',text:'抵達 Ede-Wageningen，等候 Bus 108（週六首班 09:09）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:''},
+      {time:'09:09',text:'搭 Bus 108 往 Apeldoorn → Otterlo Rotonde 下車（約17分鐘）⚠️ 只接受信用卡感應',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station bus stop',ticketUrl:''},
+      {time:'09:30',text:'抵達 De Hoge Veluwe 國家公園入口，掃公園票入場（E-ticket: 2621042266）',cat:'transport',fixed:true,mapQuery:'De Hoge Veluwe National Park Otterlo entrance',ticketUrl:''},
+      {time:'09:35',text:'🚲 借免費白色自行車，騎車穿梭森林、沙丘、荒野探索公園',cat:'adv',fixed:false,mapQuery:'De Hoge Veluwe National Park bicycle workshop',ticketUrl:''},
+      {time:'11:00',text:'🎨 Kröller-Müller Museum — 梵谷第二大典藏90幅＋現代藝術｜美術館票：11490100276243',cat:'sight',fixed:true,mapQuery:'Kröller-Müller Museum Houtkampweg 6 Otterlo',ticketUrl:'https://krollermuller.nl/en/visit'},
+      {time:'13:30',text:'Park Restaurant 午餐（廚房10:30開）',cat:'food',fixed:false,mapQuery:'Kröller-Müller Museum restaurant',ticketUrl:''},
+      {time:'14:30',text:'🗿 戶外雕塑公園 Sculpture Garden — Rodin、Giacometti、Mondrian 等160件，全歐最大！',cat:'sight',fixed:false,mapQuery:'Kröller-Müller Museum sculpture garden',ticketUrl:''},
+      {time:'16:30',text:'🚲 繼續騎車探索公園 — Jachthuis Sint Hubertus 獵莊（Art Deco建築）或沙丘區',cat:'adv',fixed:false,mapQuery:'Jachthuis Sint Hubertus De Hoge Veluwe',ticketUrl:''},
+      {time:'18:30',text:'還車，搭 Bus 108 回 Ede-Wageningen（每小時一班）',cat:'transport',fixed:false,mapQuery:'Otterlo Rotonde bus stop',ticketUrl:''},
+      {time:'19:00',text:'Ede-Wageningen 搭火車回 Rotterdam Centraal（轉 Utrecht，約1h15m）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:'https://www.ns.nl/en'},
+      {time:'20:30',text:'抵達鹿特丹',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
     ]},
+    // 6/28 海牙
     {activities:[
-      {time:'19:10',text:'EC 9260｜Rotterdam Centraal 出發 → Bruxelles-Midi（2h7m，直達）PNR: QXFGLCM',cat:'transport',fixed:true,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
+      {time:'09:30',text:'Rotterdam Centraal 出發 → Den Haag Centraal（約25分鐘，NS火車，週日 off-peak）',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
+      {time:'10:00',text:'莫瑞泰斯美術館 Mauritshuis — 維梅爾《戴珍珠耳環的少女》、林布蘭等大師作品',cat:'sight',fixed:false,mapQuery:'Mauritshuis Den Haag',ticketUrl:'https://www.mauritshuis.nl/en/your-visit/tickets/'},
+      {time:'12:30',text:'海牙市中心午餐',cat:'food',fixed:false,mapQuery:'Den Haag city center restaurants',ticketUrl:''},
+      {time:'14:00',text:'埃舍爾博物館 Escher in het Paleis（選擇性）— 視覺錯覺藝術',cat:'sight',fixed:false,mapQuery:'Escher in het Paleis Den Haag',ticketUrl:'https://www.escherinhetpaleis.nl/'},
+      {time:'16:00',text:'Scheveningen 海灘散步（電車約20分鐘）',cat:'adv',fixed:false,mapQuery:'Scheveningen Beach Den Haag',ticketUrl:''},
+      {time:'18:30',text:'搭火車回鹿特丹（約25分鐘）',cat:'transport',fixed:false,mapQuery:'Den Haag Centraal Station',ticketUrl:'https://www.ns.nl/en'},
+    ]},
+    // 6/29 Dansateliers
+    {activities:[
+      {time:'20:00',text:'Dansateliers Movement Class — Ashley & Domenik（週一即興課）',cat:'dance',fixed:false,mapQuery:"Dansateliers Rotterdam 's-Gravendijkwal 58",ticketUrl:'https://dansateliers.stager.co/shop/default'},
+    ]},
+    // 6/30 移動布魯塞爾
+    {activities:[
+      {time:'19:10',text:'EC 9260｜Rotterdam Centraal 出發 → Bruxelles-Midi（2h7m，直達）｜PNR: QXFGLCM',cat:'transport',fixed:true,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
       {time:'21:17',text:'抵達 Bruxelles-Midi，前往住處安頓',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:''},
     ]},
   ],
   bru:[
+    // 6/30 抵達
     {activities:[
       {time:'21:17',text:'抵達 Bruxelles-Midi，前往住處安頓',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:''},
     ]},
+    // 7/1
     {activities:[
       {time:'',text:'休息日 — 養精蓄銳備戰演唱會',cat:'adv',fixed:false,mapQuery:'Brussels Belgium',ticketUrl:''},
     ]},
+    // 7/2 BTS
     {activities:[
-      {time:'19:00',text:"🎤 BTS WORLD TOUR 'ARIRANG' — King Baudouin Stadium",cat:'night',fixed:true,mapQuery:'King Baudouin Stadium Brussels',ticketUrl:''},
+      {time:'19:00',text:"🎤 BTS WORLD TOUR 'ARIRANG' — King Baudouin Stadium（地鐵2號線 Heysel 站）",cat:'night',fixed:true,mapQuery:'King Baudouin Stadium Brussels',ticketUrl:''},
     ]},
+    // 7/3 皇家美術館
     {activities:[
-      {time:'',text:'比利時皇家美術館 Royal Museums of Fine Arts of Belgium',cat:'sight',fixed:false,mapQuery:'Royal Museums of Fine Arts of Belgium Brussels',ticketUrl:'https://www.fine-arts-museum.be/en/visit'},
+      {time:'',text:'比利時皇家美術館 Royal Museums of Fine Arts of Belgium（⚠️ 週一休館）',cat:'sight',fixed:false,mapQuery:'Royal Museums of Fine Arts of Belgium Brussels',ticketUrl:'https://www.fine-arts-museum.be/en/visit'},
     ]},
+    // 7/4
     {activities:[]},
+    // 7/5 週日 Contact Improv Jam
     {activities:[
       {time:'14:00',text:'TIC TAC Contact Improv Jam — 引導開場 14:00，CI Jam 15:00–18:00',cat:'dance',fixed:false,mapQuery:'Tictac Art Centre Brussels Rue Emile Carpentier 34',ticketUrl:'https://tictacartcentre.com/event-category/tictac-classes/'},
     ]},
+    // 7/6 週一 Screw It
     {activities:[
       {time:'19:30',text:'TIC TAC Screw It Weekly Improvisation — Florian Vuille（即興探索課）',cat:'dance',fixed:false,mapQuery:'Tictac Art Centre Brussels Rue Emile Carpentier 34',ticketUrl:'https://tictacartcentre.com/event-category/tictac-classes/'},
     ]},
+    // 7/7 週二 Movement Research
     {activities:[
-      {time:'19:30',text:'Movement Research by SORTA Project — 即興＋肢體研究',cat:'dance',fixed:false,mapQuery:'Tictac Art Centre Brussels Rue Emile Carpentier 34',ticketUrl:'https://tictacartcentre.com/event-category/tictac-classes/'},
+      {time:'19:30',text:'Movement Research by SORTA Project — 即興＋肢體研究（Paola Madrid & Lola Vera）',cat:'dance',fixed:false,mapQuery:'Tictac Art Centre Brussels Rue Emile Carpentier 34',ticketUrl:'https://tictacartcentre.com/event-category/tictac-classes/'},
     ]},
+    // 7/8 週三 Hélène Marcelle
     {activities:[
       {time:'18:00',text:'Hélène Marcelle 當代舞技巧課 — Modern & Post-Modern（AlkimaStudio, Flagey）',cat:'dance',fixed:false,mapQuery:'AlkimaStudio Brussels Place Blyckaerts 6',ticketUrl:'http://www.helenemarcelle.eu/classes/teachings/floor-work--barre-a-terre/'},
     ]},
+    // 7/9 週四 布魯日
     {activities:[
-      {time:'06:00',text:'布魯塞爾中央站出發往布魯日（建議搭06:xx班次）',cat:'transport',fixed:false,mapQuery:'Brussels Central Station',ticketUrl:'https://www.belgiantrain.be/en'},
-      {time:'07:00',text:'抵達布魯日 Bruges（車程約55分鐘）',cat:'transport',fixed:false,mapQuery:'Bruges Train Station',ticketUrl:''},
-      {time:'09:00',text:'De Halve Maan 半月啤酒廠 — 導覽＋喝新鮮 Brugse Zot！',cat:'food',fixed:false,mapQuery:'De Halve Maan Brewery Bruges',ticketUrl:'https://www.halvemaan.be/en/brewery-tour'},
+      {time:'06:00',text:'布魯塞爾中央站出發往布魯日（車程約55分鐘）',cat:'transport',fixed:false,mapQuery:'Brussels Central Station',ticketUrl:'https://www.belgiantrain.be/en'},
+      {time:'07:00',text:'抵達布魯日 Bruges',cat:'transport',fixed:false,mapQuery:'Bruges Train Station',ticketUrl:''},
+      {time:'09:00',text:'De Halve Maan 半月啤酒廠 — Classic Tour €16，屋頂360°景觀＋1杯啤酒，約45分鐘（⚠️ 220階樓梯，穿舒適鞋！）',cat:'food',fixed:false,mapQuery:'De Halve Maan Brewery Bruges',ticketUrl:'https://www.halvemaan.be/en/visit/brewery'},
       {time:'11:00',text:'布魯日老城漫步 — 市集廣場、鐘樓、運河',cat:'sight',fixed:false,mapQuery:'Markt Bruges Belgium',ticketUrl:''},
       {time:'13:00',text:'午餐 — 老城區比利時燉牛肉或薯條',cat:'food',fixed:false,mapQuery:'restaurants Markt Bruges',ticketUrl:''},
       {time:'15:00',text:'運河遊船 Boat Tour',cat:'sight',fixed:false,mapQuery:'Bruges canal boat tour',ticketUrl:''},
       {time:'21:00',text:'搭火車回布魯塞爾（末班 23:22）',cat:'transport',fixed:false,mapQuery:'Bruges Train Station',ticketUrl:'https://www.belgiantrain.be/en'},
       {time:'22:00',text:'抵達布魯塞爾中央站',cat:'transport',fixed:false,mapQuery:'Brussels Central Station',ticketUrl:''},
     ]},
+    // 7/10
     {activities:[]},
+    // 7/11
+    {activities:[]},
+    // 7/12
+    {activities:[]},
+    // 7/13 移動巴黎
     {activities:[
-      {time:'',text:'早班火車前往巴黎（Thalys/Eurostar 約1.5小時）',cat:'transport',fixed:false,mapQuery:'Brussels Midi Station',ticketUrl:'https://www.eurostar.com'},
+      {time:'07:37',text:'OUIGO Train Classique｜Brussel-Zuid 出發 → 巴黎北站（直達，2h58m）｜€22｜參考編號：MAKGWH',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:''},
+      {time:'10:35',text:'抵達 Paris Gare du Nord — 辦 Navigo Découverte 卡（€5）＋加值週票（€32.40）',cat:'transport',fixed:true,mapQuery:'Paris Gare du Nord',ticketUrl:''},
+      {time:'11:00',text:'搭 RER B → Saint-Michel Notre-Dame 站（約10分鐘）',cat:'transport',fixed:false,mapQuery:'Saint-Michel Notre-Dame RER Station Paris',ticketUrl:''},
+      {time:'11:30',text:'抵達住處 — 6 Place Saint-Michel 🎉',cat:'transport',fixed:false,mapQuery:'Place Saint-Michel Paris',ticketUrl:''},
     ]},
   ],
   par:[
-    {activities:[{time:'',text:'抵達巴黎，安頓住處',cat:'transport',fixed:false,mapQuery:'Paris Gare du Nord',ticketUrl:''}]},
-    {activities:[{time:'',text:'Pinault Collection 皮諾美術館（Bourse de Commerce）',cat:'sight',fixed:false,mapQuery:'Bourse de Commerce Pinault Collection Paris',ticketUrl:'https://www.boursedecommerce.fr/en/visit/'}]},
-    {activities:[{time:'21:00',text:'🎆 消防員舞會 Bal des Pompiers — 國慶前夜（Caserne Montmartre 或 Caserne Bitche）',cat:'night',fixed:false,mapQuery:'Caserne Montmartre Paris 12 rue Carpeaux',ticketUrl:''}]},
-    {activities:[{time:'',text:'La Félicità — 超大義式食堂，巴黎13區',cat:'food',fixed:false,mapQuery:'La Felicita Paris 13',ticketUrl:''}]},
-    {activities:[{time:'',text:"Thanx God I'm a V.I.P. — 70年代洋裝＋老絲巾，結合音樂＋咖啡",cat:'shop',fixed:false,mapQuery:'Thanx God I am a VIP Paris',ticketUrl:''}]},
-    {activities:[{time:'14:00',text:'Centre de Danse du Marais — 成人現代舞 Catherine Cordier（進階，1.5小時）',cat:'dance',fixed:false,mapQuery:'Centre de Danse du Marais Paris 41 rue du Temple',ticketUrl:'https://www.centrededansedumarais.fr/en/planning/'}]},
-    {activities:[{time:'',text:'Episode / Kiliwatch — 平價挖寶 vs 設計孤品（用力翻！）',cat:'shop',fixed:false,mapQuery:'Kiliwatch Paris',ticketUrl:''}]},
-    {activities:[{time:'',text:'Celia Darling Vintage — 第9區，飾品CP值最高',cat:'shop',fixed:false,mapQuery:'Celia Darling Vintage Paris',ticketUrl:''}]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
+    // 7/13 週一 抵達＋消防員舞會
     {activities:[
-      {time:'11:00',text:'出發前往戴高樂機場 (RER B)',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport',ticketUrl:''},
+      {time:'07:37',text:'OUIGO Train Classique｜Brussel-Zuid 出發 → 巴黎北站（直達，2h58m）｜€22｜參考編號：MAKGWH',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:''},
+      {time:'10:35',text:'抵達 Paris Gare du Nord — 辦 Navigo Découverte 卡（€5）＋加值週票（€32.40）',cat:'transport',fixed:true,mapQuery:'Paris Gare du Nord',ticketUrl:''},
+      {time:'11:00',text:'搭 RER B → Saint-Michel Notre-Dame 站（約10分鐘）',cat:'transport',fixed:false,mapQuery:'Saint-Michel Notre-Dame RER Station Paris',ticketUrl:''},
+      {time:'11:30',text:'抵達住處 — 6 Place Saint-Michel 🎉',cat:'transport',fixed:false,mapQuery:'Place Saint-Michel Paris',ticketUrl:''},
+      {time:'21:00',text:'🎆 消防員舞會 Bal des Pompiers — 免費入場（Caserne Montmartre 或 Caserne Bitche）',cat:'night',fixed:false,mapQuery:'Caserne Montmartre Paris 12 rue Carpeaux',ticketUrl:''},
+    ]},
+    // 7/14 週二 國慶日
+    {activities:[
+      {time:'10:00',text:'🇫🇷 法國國慶日 — 香榭麗舍大道閱兵',cat:'sight',fixed:false,mapQuery:'Champs-Élysées Paris',ticketUrl:''},
+      {time:'19:00',text:'La Félicità — 超大義式食堂，巴黎13區（週二 08:30–00:00）',cat:'food',fixed:false,mapQuery:'La Felicita 5 Parv Alan Turing Paris 13',ticketUrl:''},
+    ]},
+    // 7/15 週三 皮諾美術館
+    {activities:[
+      {time:'11:00',text:'Pinault Collection 皮諾美術館（Bourse de Commerce）— 含 Fujiko Nakaya 霧雕塑裝置｜€15',cat:'sight',fixed:false,mapQuery:'Bourse de Commerce 2 Rue de Viarmes Paris',ticketUrl:'https://www.pinaultcollection.com/en/boursedecommerce'},
+    ]},
+    // 7/16 週四 舞蹈課
+    {activities:[
+      {time:'14:00',text:'Centre de Danse du Marais — 成人現代舞 Catherine Cordier（進階，1.5小時，€22）',cat:'dance',fixed:false,mapQuery:'Centre de Danse du Marais Paris 41 rue du Temple',ticketUrl:'https://www.centrededansedumarais.fr/en/planning/'},
+    ]},
+    // 7/17 週五 購物三店
+    {activities:[
+      {time:'11:00',text:'Episode — 2區 12 Rue Tiquetonne（開到 20:00）',cat:'shop',fixed:false,mapQuery:'Episode 12 Rue Tiquetonne Paris',ticketUrl:''},
+      {time:'13:00',text:'Kiliwatch — 同街64號，設計孤品（用力翻！）',cat:'shop',fixed:false,mapQuery:'Kiliwatch 64 Rue Tiquetonne Paris',ticketUrl:''},
+      {time:'15:00',text:"Thanx God I'm a V.I.P. — 10區 12 Rue de Lancry，70年代洋裝＋老絲巾（步行15分鐘）",cat:'shop',fixed:false,mapQuery:"Thanx God I'm a VIP 12 Rue de Lancry Paris",ticketUrl:''},
+    ]},
+    // 7/18 週六 Celia Darling
+    {activities:[
+      {time:'12:00',text:'Celia Darling Vintage — 9區 5 Rue Henry Monnier，飾品CP值最高（12:00–19:00）',cat:'shop',fixed:false,mapQuery:'Celia Darling 5 Rue Henry Monnier Paris 9',ticketUrl:''},
+    ]},
+    // 7/19
+    {activities:[]},
+    // 7/20
+    {activities:[]},
+    // 7/21
+    {activities:[]},
+    // 7/22 回程
+    {activities:[
+      {time:'11:00',text:'出發前往戴高樂機場 (RER B，約35分鐘，Saint-Michel直達CDG)',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport',ticketUrl:''},
       {time:'14:40',text:'KE5902 起飛 → 首爾仁川（2E航廈）',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport Terminal 2E',ticketUrl:''},
     ]},
   ],
 };
-
 let state={};
-let budget={limit:0,expenses:[]};
+let budget={limit:1163,expenses:[
+  {amount:25.00,desc:'梵谷博物館 Van Gogh Museum｜票號：771461314094463570',cat:'sight',city:'阿姆斯特丹',date:'2026-06-23'},
+  {amount:13.85,desc:'De Hoge Veluwe 國家公園 Day Pass｜E-ticket：2621042266',cat:'sight',city:'鹿特丹',date:'2026-06-27'},
+  {amount:13.90,desc:'Kröller-Müller Museum Day Ticket｜票號：11490100276243',cat:'sight',city:'鹿特丹',date:'2026-06-27'},
+  {amount:17.85,desc:'EC 9260｜Rotterdam Centraal → Bruxelles-Midi｜PNR: QXFGLCM｜6/30 19:10',cat:'transport',city:'鹿特丹',date:'2026-06-30'},
+  {amount:22.00,desc:'OUIGO Train Classique｜Brussel-Zuid → Paris Nord｜參考編號：MAKGWH｜7/13 07:37',cat:'transport',city:'布魯塞爾',date:'2026-07-13'},
+]};
+let pending=[
+  {desc:'De Halve Maan 啤酒廠 Classic Tour',city:'布魯日',amount:16.00,url:'https://www.halvemaan.be/en/visit/brewery'},
+  {desc:'比利時皇家美術館',city:'布魯塞爾',amount:15.00,url:'https://www.fine-arts-museum.be/en/visit'},
+  {desc:'Pinault Collection 皮諾美術館',city:'巴黎',amount:15.00,url:'https://www.pinaultcollection.com/en/boursedecommerce'},
+  {desc:'Conny Janssen Danst × 3堂',city:'鹿特丹',amount:30.00,url:'https://ticketshop.ticketmatic.com/conny_janssen_danst/shop-3?l=en'},
+  {desc:'Dansateliers Movement Class',city:'鹿特丹',amount:null,url:'https://dansateliers.stager.co/shop/default'},
+  {desc:'TIC TAC Contact Improv Jam',city:'布魯塞爾',amount:15.00,url:'https://tictacartcentre.com/event-category/tictac-classes/'},
+  {desc:'TIC TAC Screw It',city:'布魯塞爾',amount:15.00,url:'https://tictacartcentre.com/event-category/tictac-classes/'},
+  {desc:'Movement Research SORTA Project',city:'布魯塞爾',amount:null,url:'https://tictacartcentre.com/event-category/tictac-classes/'},
+  {desc:'Hélène Marcelle 當代舞技巧課',city:'布魯塞爾',amount:15.00,url:'http://www.helenemarcelle.eu/classes/teachings/'},
+  {desc:'Centre de Danse du Marais — Catherine Cordier',city:'巴黎',amount:22.00,url:'https://www.centrededansedumarais.fr/en/planning/'},
+  {desc:'NS Flex Dal Voordeel 月訂閱',city:'荷蘭',amount:13.26,url:'https://www.ns.nl/en/season-tickets/dal-voordeel'},
+  {desc:'阿姆斯特丹→鹿特丹火車',city:'阿姆斯特丹',amount:10.00,url:'https://www.ns.nl/en'},
+  {desc:'鹿特丹→Ede-Wageningen 來回（6/27）',city:'鹿特丹',amount:26.00,url:'https://www.ns.nl/en'},
+  {desc:'海牙來回（6/28，若去）',city:'鹿特丹',amount:6.00,url:'https://www.ns.nl/en'},
+  {desc:'Navigo Découverte 卡＋週票',city:'巴黎',amount:37.40,url:'https://www.navigo.fr'},
+];
 let active='ams';
 let saveTimer=null;
-
 function loadState(){
   setSaveStatus('loading');
   try{
     const raw=localStorage.getItem(SKEY);
-    if(raw){const p=JSON.parse(raw);state=p.state||p;budget=p.budget||{limit:0,expenses:[]};}
-    else{state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};}
-  }catch(e){state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};}
+    if(raw){const p=JSON.parse(raw);state=p.state||DEFAULT;budget=p.budget||budget;pending=p.pending||pending;}
+    else{state=JSON.parse(JSON.stringify(DEFAULT));}
+  }catch(e){state=JSON.parse(JSON.stringify(DEFAULT));}
   setSaveStatus('saved');renderTabs();renderSec();
 }
 function saveState(){
   setSaveStatus('saving');
-  try{localStorage.setItem(SKEY,JSON.stringify({state,budget}));setSaveStatus('saved');}
+  try{localStorage.setItem(SKEY,JSON.stringify({state,budget,pending}));setSaveStatus('saved');}
   catch(e){setSaveStatus('error');}
 }
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveState,600);}
@@ -294,8 +375,22 @@ function setSaveStatus(s){
 }
 function resetAll(){
   if(!confirm('確定要重置所有行程與記帳資料嗎？'))return;
-  state=JSON.parse(JSON.stringify(DEFAULT));budget={limit:0,expenses:[]};
+  state=JSON.parse(JSON.stringify(DEFAULT));
+  budget={limit:1163,expenses:[]};
+  pending=[];
   saveState();renderSec();
+}
+function getDPR(){
+  const pt=pending.reduce((s,e)=>s+(e.amount||0),0);
+  const paid=budget.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const limit=parseFloat(budget.limit)||0;
+  const remain=limit-paid-pt;
+  const tripStart=new Date('2026-06-22');
+  const tripEnd=new Date('2026-07-22');
+  const today=new Date();
+  const totalTripDays=31;
+  const daysLeft=today<tripStart?totalTripDays:today>tripEnd?1:Math.max(1,Math.ceil((tripEnd-today)/(1000*60*60*24)));
+  return remain>0?remain/daysLeft:0;
 }
 function renderTabs(){
   document.getElementById('tabs').innerHTML=CITIES.map(c=>`
@@ -303,7 +398,6 @@ function renderTabs(){
 }
 function sw(id){active=id;renderTabs();renderSec();}
 function catInfo(val){return CATS.find(c=>c.val===val)||CATS[0];}
-
 function renderTransitSection(key){
   const t=TRANSIT[key];if(!t)return'';
   const cards=t.passes.map(p=>`<div class="pass-card"><div class="pass-name">${p.name}</div><div class="pass-price">${p.price}</div><div class="pass-desc">${p.desc}</div><a class="pass-link" href="${p.url}" target="_blank">了解更多 ↗</a></div>`).join('');
@@ -312,9 +406,8 @@ function renderTransitSection(key){
 function renderTrainCard(idx){
   const r=TRAIN_ROUTES[idx];if(r===undefined)return'';
   const lks=r.links.map(l=>`<a class="tlink" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('');
-  return `<div class="train-card"><div class="train-header"><span class="train-title">🚂 ${r.from} → ${r.to}　約 ${r.duration}</span><span class="train-price">約 ${r.price}</span></div><div class="train-sub">⚠️ 票尚未購買 — ${r.priceNote}</div><div class="tlinks">${lks}</div></div>`;
+  return `<div class="train-card"><div class="train-header"><span class="train-title">🚂 ${r.from} → ${r.to}　約 ${r.duration}</span><span class="train-price">${r.price}</span></div><div class="train-sub">${r.priceNote}</div><div class="tlinks">${lks}</div></div>`;
 }
-
 function renderSec(){
   const sec=document.getElementById('sections');
   if(active==='budget'){sec.innerHTML=buildBudget();return;}
@@ -334,12 +427,14 @@ function renderSec(){
     const d=addDays(new Date(city.start),i);
     const badge=city.dayBadges?.[i];
     const badgeHtml=badge?`<span class="day-badge badge-${badge}">${badge==='arrive'?'抵達日':'回程日 ✈️'}</span>`:'';
+    const dpr=getDPR();
+    const dprBadge=`<span style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;background:${dpr>=30?'#E1F5EE':dpr>=20?'#FAEEDA':'#FAECE7'};color:${dpr>=30?'#085041':dpr>=20?'#633806':'#4A1B0C'};font-weight:600">💡 €${dpr.toFixed(0)}/天</span>`;
     const acts=(state[city.id]?.[i]?.activities)||[];
     const actsHtml=acts.length?acts.map((a,j)=>{
       const cat=catInfo(a.cat);
       const mq=a.mapQuery||a.text;
       const mapBtn=mq?`<a class="act-link map-link" href="${mapUrl(mq)}" target="_blank">📍 地圖</a>`:'';
-      const ticketBtn=a.ticketUrl?`<a class="act-link ticket-link" href="${a.ticketUrl}" target="_blank">🎟 購票</a>`:'';
+      const ticketBtn=a.ticketUrl?`<a class="act-link ticket-link" href="${a.ticketUrl}" target="_blank">🎟 購票/資訊</a>`:'';
       return `<div class="time-slot">
         <input class="time-input" type="time" value="${a.time||''}" onchange="upTime('${city.id}',${i},${j},this.value)"/>
         <div class="act-main">
@@ -351,7 +446,7 @@ function renderSec(){
     }).join(''):'<p class="empty-hint">尚未新增活動</p>';
     const catOpts=CATS.map(c=>`<option value="${c.val}">${c.label}</option>`).join('');
     h+=`<div class="day-block">
-      <div class="day-header"><span class="day-label">第 ${i+1} 天</span><span class="day-date">${fmt(d)}</span>${badgeHtml}</div>
+      <div class="day-header"><span class="day-label">第 ${i+1} 天</span><span class="day-date">${fmt(d)}</span>${badgeHtml}${dprBadge}</div>
       <div class="activities-wrap">
         ${actsHtml}
         <div class="add-section">
@@ -374,7 +469,6 @@ function renderSec(){
   }
   sec.innerHTML=h;
 }
-
 function addAct(cid,di){
   const t=document.getElementById(`t-${cid}-${di}`).value;
   const a=document.getElementById(`a-${cid}-${di}`).value.trim();
@@ -392,42 +486,87 @@ function upTime(cid,di,ai,v){
   state[cid][di].activities.sort((x,y)=>(x.time||'99:99').localeCompare(y.time||'99:99'));
   scheduleSave();renderSec();
 }
-
 function buildBudget(){
-  const total=budget.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const paid=budget.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const pendingTotal=pending.reduce((s,e)=>s+(e.amount||0),0);
+  const pendingUnknown=pending.filter(e=>!e.amount).length;
   const limit=parseFloat(budget.limit)||0;
-  const remain=limit-total;
-  const pct=limit?Math.min(100,Math.round(total/limit*100)):0;
+  const totalCommitted=paid+pendingTotal;
+  const remain=limit-totalCommitted;
+  const pct=limit?Math.min(100,Math.round(totalCommitted/limit*100)):0;
   const barColor=pct>=90?'#E24B4A':pct>=70?'#BA7517':'#1D9E75';
+  const tripStart=new Date('2026-06-22');
+  const tripEnd=new Date('2026-07-22');
+  const today=new Date();
+  const totalTripDays=31;
+  const daysLeft=today<tripStart?totalTripDays:today>tripEnd?1:Math.max(1,Math.ceil((tripEnd-today)/(1000*60*60*24)));
+  const dpr=remain>0?remain/daysLeft:-1;
   const byCat={};
   budget.expenses.forEach(e=>{byCat[e.cat]=(byCat[e.cat]||0)+(parseFloat(e.amount)||0);});
   const catRows=EXP_CATS.map(c=>{const n=byCat[c.val]||0;if(!n)return'';return`<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>${c.label}</span><span style="font-weight:600">€${n.toFixed(2)}</span></div>`;}).join('');
   const expRows=budget.expenses.length?[...budget.expenses].reverse().map((e,ri)=>{
-    const i=budget.expenses.length-1-ri;
-    const cat=EXP_CATS.find(c=>c.val===e.cat)||EXP_CATS[5];
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
-      <div style="flex:1"><div style="font-size:13px;font-weight:600">${e.desc||'（無備註）'}</div>
-      <div style="font-size:11px;color:#aaa">${e.date||''} ${e.city?'· '+e.city:''} · ${cat.label}</div></div>
-      <div style="font-size:14px;font-weight:700">€${(parseFloat(e.amount)||0).toFixed(2)}</div>
-      <button onclick="delExp(${i})" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button>
-    </div>`;
+    const i=budget.expenses.length-1-ri;const cat=EXP_CATS.find(c=>c.val===e.cat)||EXP_CATS[5];
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">${e.desc||'（無備註）'}</div><div style="font-size:11px;color:#aaa">${e.date||''} ${e.city?'· '+e.city:''} · ${cat.label}</div></div><div style="font-size:14px;font-weight:700">€${(parseFloat(e.amount)||0).toFixed(2)}</div><button onclick="delExp(${i})" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div>`;
   }).join(''):'<div style="font-size:13px;color:#aaa;padding:.5rem 0">尚未新增任何消費</div>';
+  const pendingRows=pending.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${p.desc}</div><div style="font-size:11px;color:#aaa">${p.city}</div></div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">${p.amount?'€'+p.amount.toFixed(2):'待確認'}</div>
+      ${p.url?`<a href="${p.url}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>`:''}
+      <button onclick="delPending(${i})" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>`).join('');
   const cityOpts=EXP_CITIES.map(c=>`<option value="${c}">${c}</option>`).join('');
   const catOpts=EXP_CATS.map(c=>`<option value="${c.val}">${c.label}</option>`).join('');
-  return `<div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
-    <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">旅程總預算</div>
+  return `
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">旅程總預算概覽</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem">
-      <span style="font-size:13px;color:#888">預算上限 €</span>
-      <input type="number" id="bl" value="${budget.limit||''}" placeholder="例如 3000" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px" oninput="budget.limit=this.value;scheduleSave();renderSec()"/>
+      <span style="font-size:13px;color:#888">帳戶餘額 €</span>
+      <input type="number" step="0.01" value="${budget.limit}" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px;font-weight:600;color:#1D9E75" oninput="budget.limit=parseFloat(this.value)||0;scheduleSave();renderSec()"/>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:.75rem">
-      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem"><div style="font-size:11px;color:#888;margin-bottom:2px">已花費</div><div style="font-size:18px;font-weight:700;color:#E24B4A">€${total.toFixed(2)}</div></div>
-      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem"><div style="font-size:11px;color:#888;margin-bottom:2px">剩餘</div><div style="font-size:18px;font-weight:700;color:${remain>=0?'#1D9E75':'#E24B4A'}">${limit?'€'+remain.toFixed(2):'—'}</div></div>
-      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem"><div style="font-size:11px;color:#888;margin-bottom:2px">使用率</div><div style="font-size:18px;font-weight:700;color:${barColor}">${limit?pct+'%':'—'}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem">
+      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
+        <div style="font-size:11px;color:#888;margin-bottom:2px">已付清</div>
+        <div style="font-size:18px;font-weight:700;color:#E24B4A">€${paid.toFixed(2)}</div>
+      </div>
+      <div style="background:#FAEEDA;border-radius:8px;padding:.6rem .75rem;border:1px solid #FAC775">
+        <div style="font-size:11px;color:#633806;margin-bottom:2px">⚠️ 待付（含${pendingUnknown}項待確認）</div>
+        <div style="font-size:18px;font-weight:700;color:#BA7517">€${pendingTotal.toFixed(2)}+</div>
+      </div>
+      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
+        <div style="font-size:11px;color:#888;margin-bottom:2px">預計剩餘（扣待付）</div>
+        <div style="font-size:18px;font-weight:700;color:${remain>=0?'#1D9E75':'#E24B4A'}">€${remain.toFixed(2)}</div>
+      </div>
+      <div style="background:${dpr>=30?'#E1F5EE':dpr>=20?'#FAEEDA':'#FAECE7'};border-radius:8px;padding:.6rem .75rem;border:1px solid ${dpr>=30?'#C0DD97':dpr>=20?'#FAC775':'#FAC775'}">
+        <div style="font-size:11px;color:#555;margin-bottom:2px">💡 每日飲食/購物預算</div>
+        <div style="font-size:18px;font-weight:700;color:${dpr>=30?'#085041':dpr>=20?'#633806':'#4A1B0C'}">${dpr>=0?'€'+dpr.toFixed(2):'不足'}</div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px">共${totalTripDays}天，剩餘${daysLeft}天計算</div>
+      </div>
     </div>
-    ${limit?`<div style="background:#eee;border-radius:4px;height:8px;overflow:hidden"><div style="height:100%;border-radius:4px;background:${barColor};width:${pct}%"></div></div>`:''}
+    <div style="background:#eee;border-radius:4px;height:10px;overflow:hidden;margin-bottom:4px">
+      <div style="height:100%;border-radius:4px;background:${barColor};width:${pct}%;transition:width .3s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#888">
+      <span>已付＋待付：€${totalCommitted.toFixed(2)} (${pct}%)</span>
+      <span>帳戶餘額：€${limit.toFixed(2)}</span>
+    </div>
   </div>
-  ${catRows?`<div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem"><div style="font-size:14px;font-weight:600;margin-bottom:.5rem">按類別統計</div>${catRows}</div>`:''}
+  ${catRows?`<div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem"><div style="font-size:14px;font-weight:600;margin-bottom:.5rem">按類別統計（已付）</div>${catRows}</div>`:''}
+  <div style="background:#fff;border:1px solid #FAC775;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem;color:#633806">⚠️ 待付清單 <span style="font-size:12px;font-weight:400">— 預估共 €${pendingTotal.toFixed(2)}（另有${pendingUnknown}項待確認）</span></div>
+    ${pendingRows||'<div style="font-size:13px;color:#aaa;padding:.25rem 0">待付清單為空</div>'}
+    <div style="margin-top:.75rem;border-top:1px solid #f5e8c8;padding-top:.65rem">
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px">
+        <input id="pd" placeholder="項目名稱" style="flex:2;min-width:120px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px"/>
+        <input id="pc" placeholder="城市" style="flex:1;min-width:80px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px"/>
+        <input id="pa" type="number" step="0.01" placeholder="金額（選填）" style="flex:1;min-width:90px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px"/>
+      </div>
+      <div style="display:flex;gap:5px">
+        <input id="pu" placeholder="購票網址（選填）" style="flex:1;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px"/>
+        <button onclick="addPending()" style="border:1px solid #FAC775;border-radius:8px;padding:5px 12px;font-size:12px;background:#FAEEDA;color:#633806;cursor:pointer;white-space:nowrap">新增</button>
+      </div>
+    </div>
+  </div>
   <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
     <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">新增消費</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
@@ -442,10 +581,20 @@ function buildBudget(){
     <button onclick="addExp()" style="border:1px solid #ccc;border-radius:8px;padding:6px 16px;font-size:13px;background:#fff;cursor:pointer;width:100%">新增消費紀錄</button>
   </div>
   <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem">
-    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">消費紀錄 <span style="font-size:12px;color:#aaa;font-weight:400">${budget.expenses.length} 筆</span></div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">已付消費紀錄 <span style="font-size:12px;color:#aaa;font-weight:400">${budget.expenses.length} 筆</span></div>
     ${expRows}
   </div>`;
 }
+function addPending(){
+  const desc=document.getElementById('pd').value.trim();
+  const city=document.getElementById('pc').value.trim();
+  const amount=parseFloat(document.getElementById('pa').value)||null;
+  const url=document.getElementById('pu').value.trim();
+  if(!desc)return;
+  pending.push({desc,city,amount,url});
+  scheduleSave();renderSec();
+}
+function delPending(i){pending.splice(i,1);scheduleSave();renderSec();}
 function addExp(){
   const a=document.getElementById('ea').value;
   const desc=document.getElementById('edesc').value.trim();
@@ -457,15 +606,10 @@ function addExp(){
   scheduleSave();renderSec();
 }
 function delExp(i){budget.expenses.splice(i,1);scheduleSave();renderSec();}
-
 function buildSummary(){
-  let total=0,filled=0,totalDays=0;
-  const byCat={};
+  let total=0,filled=0,totalDays=0;const byCat={};
   CITIES.filter(c=>c.id!=='summary'&&c.id!=='budget').forEach(city=>{
-    (state[city.id]||[]).forEach(day=>{
-      totalDays++;if(day.activities.length)filled++;
-      day.activities.forEach(a=>{total++;byCat[a.cat]=(byCat[a.cat]||0)+1;});
-    });
+    (state[city.id]||[]).forEach(day=>{totalDays++;if(day.activities.length)filled++;day.activities.forEach(a=>{total++;byCat[a.cat]=(byCat[a.cat]||0)+1;});});
   });
   const pct=totalDays?Math.round(filled/totalDays*100):0;
   const expTotal=budget.expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
@@ -477,7 +621,7 @@ function buildSummary(){
     return `<div style="border:1px solid #e0e0e0;border-radius:12px;padding:.75rem 1rem;margin-bottom:.65rem;background:#fff"><div style="font-size:14px;font-weight:600;margin-bottom:.4rem">${city.flag}${city.name} <span style="font-size:12px;color:#888;font-weight:400">— ${acts.length} 項 / ${city.days} 天</span></div>${preview||'<div style="font-size:12px;color:#aaa">尚未規劃</div>'}${acts.length>3?`<div style="font-size:11px;color:#aaa;margin-top:2px">…還有 ${acts.length-3} 項</div>`:''}</div>`;
   }).join('');
   return `<div class="summary-grid">
-    <div class="metric"><div class="metric-label">旅行總天數</div><div class="metric-val">30</div></div>
+    <div class="metric"><div class="metric-label">旅行總天數</div><div class="metric-val">31</div></div>
     <div class="metric"><div class="metric-label">已規劃天數</div><div class="metric-val">${filled}</div></div>
     <div class="metric"><div class="metric-label">活動總數</div><div class="metric-val">${total}</div></div>
     <div class="metric"><div class="metric-label">規劃進度</div><div class="metric-val">${pct}%</div></div>
@@ -485,12 +629,11 @@ function buildSummary(){
   </div>
   <div style="margin-bottom:1.25rem">${bars}</div>
   <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
-    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">🚂 火車票價參考</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">🚂 火車票狀態</div>
     ${trainSummary}
   </div>
   <h3 style="margin-bottom:.75rem;font-size:15px;font-weight:600">各城市概覽</h3>${cityRows}`;
 }
-
 loadState();
 </script>
 </body>
