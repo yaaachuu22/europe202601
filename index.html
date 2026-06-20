@@ -49,6 +49,8 @@ input,select,button{font-family:inherit}
 .act-text{font-size:13px;color:#1a1a1a;line-height:1.4}
 .act-links{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap}
 .act-link{font-size:11px;padding:2px 8px;border-radius:20px;text-decoration:none;white-space:nowrap}
+.no-spin::-webkit-outer-spin-button,.no-spin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.no-spin{-moz-appearance:textfield;appearance:textfield}
 .map-link{background:#E6F1FB;color:#185FA5;border:1px solid #B5D4F4}
 .ticket-link{background:#EAF3DE;color:#3B6D11;border:1px solid #C0DD97}
 .pdf-link{background:#FBEBE6;color:#A53A18;border:1px solid #F4C4B5;cursor:pointer}
@@ -112,21 +114,21 @@ const EXP_CATS=[
 const EXP_CITIES=['阿姆斯特丹','鹿特丹','布魯塞爾','巴黎'];
 const TRANSIT={
   ams:{passes:[
-    {name:'GVB 1日票',price:'€10',desc:'地鐵/電車/巴士無限搭',url:'https://www.gvb.nl/en/tickets'},
-    {name:'I amsterdam City Card',price:'€65起',desc:'含交通＋70+博物館免費＋運河遊船',url:'https://www.iamsterdam.com/en/i-amsterdam-city-card'},
-  ],tip:'💡 只停1天直接刷OVpay信用卡，單日上限€10最方便。'},
+    {name:'GVB 單程/OVpay',price:'€3.40 或刷卡',desc:'Centraal↔梵谷美術館電車，2趟內買單程或刷OVpay即可',url:'https://www.gvb.nl/en/tickets'},
+    {name:'GVB 1日票',price:'€10',desc:'地鐵/電車/巴士無限搭（只去梵谷再回車站用不到）',url:'https://www.gvb.nl/en/tickets'},
+  ],tip:'💡 只去梵谷美術館再回車站，不需1日票，刷OVpay信用卡最方便。'},
   rot:{passes:[
     {name:'OVpay 刷卡',price:'按距離計費',desc:'直接用信用卡感應，無需另購票',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
     {name:'RET 1日票',price:'€9',desc:'無限搭市區地鐵、電車、巴士',url:'https://www.ret.nl/en/home/tickets-and-passes.html'},
-  ],tip:'💡 住朋友家，短途直接刷卡最方便。'},
+  ],tip:'💡 住朋友家、多為短途：刷 OVpay 信用卡最方便。單程票€4.50（2小時內可來回），1日票€9＝約2張單程，搭3趟以上才划算。'},
   bru:{passes:[
     {name:'STIB 單程',price:'€2.40',desc:'60分鐘內免費換乘，每日刷卡上限€8.50',url:'https://www.stib-mivb.be'},
     {name:'Brussels Card + STIB',price:'€47.90起/24h',desc:'含49個博物館免費＋無限STIB交通',url:'https://visit.brussels/en/article/the-brussels-card'},
   ],tip:'💡 停留12天建議多次買STIB單程票最划算。'},
   par:{passes:[
-    {name:'7/13 到站直接辦 Navigo 週票',price:'€32.40＋卡費€5',desc:'週一到站剛好！在 Gare du Nord 辦 Navigo Découverte 卡（€5）＋加值週票，用到 7/19',url:'https://www.navigo.fr'},
-    {name:'7/20 起 單程票',price:'€2.55/次',desc:'7/20–7/22 只剩3天，買單程即可。7/22 去 CDG 機場單程 €5.90',url:'https://www.ratp.fr/en/titres-et-tarifs'},
-  ],tip:'💡 7/13（週一）抵達 Gare du Nord 後直接辦 Navigo Découverte 卡（€5）＋加值週票（€32.40），用到 7/19。7/20 起買單程票，7/22 回程機場單程 €5.90。總費用約 €47，超划算！'},
+    {name:'7/13 到站辦 Navigo 週票',price:'€32.40＋卡費€5',desc:'週一到站在 Gare du Nord 辦 Navigo Découverte 卡＋加值週票，用到 7/19',url:'https://www.navigo.fr'},
+    {name:'7/20 起 單程/第二週Navigo',price:'€2.55/次 或 €32.40',desc:'7/20–7/22 買單程即可；7/22 去 CDG 用 Paris Region↔Airports 機場票 €14',url:'https://www.ratp.fr/en/titres-et-tarifs'},
+  ],tip:'⚠️ 地鐵4號線 Saint-Michel 站 7/6–7/24 全天停駛施工（你的住處就在這站）！改搭 Saint-Michel Notre-Dame 的 RER B/C（7/24前正常，去 CDG 沒問題），或公車 38/96，拉丁區多數景點步行可達。'},
 };
 const TRAIN_ROUTES=[
   {from:'阿姆斯特丹',to:'鹿特丹',duration:'40分鐘',price:'€15–25',priceNote:'不需預訂，當天買票即可',links:[{label:'NS 荷蘭國鐵',url:'https://www.ns.nl/en'}]},
@@ -161,8 +163,13 @@ const state={
     {time:'05:30',text:'搭 Sprinter 火車進阿姆斯特丹市區 (€5.60，約15分鐘)',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
     {time:'06:00',text:'抵達阿姆斯特丹中央車站，寄放行李（寄物櫃在車站內）',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station lockers',ticketUrl:''},
     {time:'08:30',text:'搭電車前往梵谷博物館（電車 2/5 號到 Rijksmuseum 站，步行5分鐘）',cat:'transport',fixed:false,mapQuery:'Van Gogh Museum Amsterdam',ticketUrl:''},
-    {time:'09:00',text:'🎨 梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內',cat:'sight',fixed:true,mapQuery:'Van Gogh Museum Museumplein 6 Amsterdam',ticketUrl:'',pdfUrl:'tickets/0623-vangogh.pdf'},
-    {time:'18:30',text:'搭 Intercity 火車前往鹿特丹（約40分鐘，每15分一班）',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
+    {time:'09:00',text:'🎨 梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內，約2小時',cat:'sight',fixed:true,mapQuery:'Van Gogh Museum Museumplein 6 Amsterdam',ticketUrl:'',pdfUrl:'tickets/0623-vangogh.pdf'},
+    {time:'11:30',text:'美術館區散步＋運河邊走走、簡單午餐（低消、不趕）',cat:'food',fixed:false,mapQuery:'Museumplein Amsterdam',ticketUrl:''},
+    {time:'14:00',text:'回阿姆斯特丹中央車站取行李',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station lockers',ticketUrl:''},
+    {time:'14:30',text:'車站周邊逛逛 — 運河、Damrak、商店街',cat:'sight',fixed:false,mapQuery:'Damrak Amsterdam',ticketUrl:''},
+    {time:'15:49',text:'搭 NS Sprinter 直達鹿特丹（往 Rotterdam Centraal，0換車，€20.20）｜2樓月台2b',cat:'transport',fixed:true,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
+    {time:'17:04',text:'抵達 Rotterdam Centraal（16號月台，右側下車）',cat:'transport',fixed:true,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
+    {time:'17:15',text:'前往朋友家 Cleyburchstraat 40-A（Oude Noorden）｜方案A：站前搭 Tram 4(往Molenlaan) 或 6(往Kleiweg) 往北，近 Station Noord 下車步行約5分｜方案B：拖大行李建議直接叫 Uber/計程車約€12-15、8分鐘',cat:'transport',fixed:false,mapQuery:'Cleyburchstraat 40 Rotterdam',ticketUrl:''},
   ]}],
   rot:[
     {activities:[{time:'19:30',text:'抵達鹿特丹 Rotterdam Centraal，前往朋友家安頓',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''}]},
@@ -246,6 +253,7 @@ const state={
     // 7/13 週一 抵達＋消防員舞會
     {activities:[
       {time:'07:37',text:'OUIGO｜Bruxelles-Midi (Brussel-Zuid) 出發 → Paris Nord（直達，2h58m）｜€22｜參考編號：MAKGWH',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:'',pdfUrl:'tickets/0713-train-ouigo.pdf'},
+      {time:'',text:'⚠️ 出發前先上 SNCF Connect「我的訂單」加購大行李 €5（現場才付要 €20）｜OUIGO 免費僅含 55×35×25cm 隨身箱',cat:'transport',fixed:false,mapQuery:'',ticketUrl:'https://www.sncf-connect.com/en-en/'},
       {time:'10:35',text:'抵達 Paris Gare du Nord — 辦 Navigo Découverte 卡（€5）＋加值週票（€32.40）',cat:'transport',fixed:true,mapQuery:'Paris Gare du Nord',ticketUrl:''},
       {time:'11:00',text:'搭 RER B → Saint-Michel Notre-Dame 站（約10分鐘）',cat:'transport',fixed:false,mapQuery:'Saint-Michel Notre-Dame RER Station Paris',ticketUrl:''},
       {time:'11:30',text:'抵達住處 — 6 Place Saint-Michel 🎉',cat:'transport',fixed:false,mapQuery:'Place Saint-Michel Paris',ticketUrl:''},
@@ -305,6 +313,7 @@ let budget={limit:1163,expenses:[
   {amount:10.00,desc:'Conny Janssen Danst — Open Class 當代舞 Merel Lammers｜票號：56853｜6/25',cat:'sight',city:'鹿特丹',date:'2026-06-25'},
   {amount:10.00,desc:'Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56912｜6/26',cat:'sight',city:'鹿特丹',date:'2026-06-26'},
   {amount:4.16,desc:'NS Sprinter｜Rotterdam Centraal → Den Haag Centraal｜訂單：E544147620｜6/28 09:06',cat:'transport',city:'鹿特丹',date:'2026-06-28'},
+  {amount:16.50,desc:'NS 火車｜Rotterdam → Ede-Wageningen 去程｜6/27',cat:'transport',city:'鹿特丹',date:'2026-06-27'},
   {amount:24.00,desc:'Mauritshuis + Prince William V Gallery｜票號：771192168523496551｜6/28 10:00',cat:'sight',city:'鹿特丹',date:'2026-06-28'},
   {amount:14.50,desc:'Escher in The Palace｜票號：774213626626760125｜有效期一年（不限日期）',cat:'sight',city:'鹿特丹',date:'2026-06-06'},
   {amount:7.50,desc:'Dansateliers ARK Movement Class — Majon van der Schot｜票號：ST1760381373351｜6/24 20:00',cat:'dance',city:'鹿特丹',date:'2026-06-24'},
@@ -317,13 +326,16 @@ let budget={limit:1163,expenses:[
 ]};
 let pending=[
   {desc:'Sprinter Schiphol→Amsterdam Centraal（6/23 現場購票）',city:'荷蘭',amount:5.60,url:'https://www.ns.nl/en'},
-  {desc:'Intercity Amsterdam→Rotterdam（6/23 現場購票・估）',city:'荷蘭',amount:17.40,url:'https://www.ns.nl/en'},
-  {desc:'火車 Rotterdam↔Ede-Wageningen 來回（6/27 現場購票・估）',city:'荷蘭',amount:33.00,url:'https://www.ns.nl/en'},
+  {desc:'NS Sprinter Amsterdam→Rotterdam（6/23 15:49 直達・全票）',city:'荷蘭',amount:20.20,url:'https://www.ns.nl/en'},
+  {desc:'火車 Ede-Wageningen→Rotterdam 回程（6/27 現場購票・估）',city:'荷蘭',amount:16.50,url:'https://www.ns.nl/en'},
   {desc:'Bus 108 Ede↔Otterlo 來回（6/27 現場購票・估）',city:'荷蘭',amount:8.00,url:''},
   {desc:'NS 火車 Den Haag→Rotterdam 回程（6/28 現場購票）',city:'荷蘭',amount:4.16,url:'https://www.ns.nl/en'},
   {desc:'TIC TAC Contact Improv Jam（7/5 現場付）',city:'布魯塞爾',amount:15.00,url:'https://tictacartcentre.com/event-category/tictac-classes/'},
+  {desc:'OUIGO 大行李加購（7/13 出發前線上加購較省）',city:'布魯塞爾',amount:5.00,url:'https://www.sncf-connect.com/en-en/'},
   {desc:'火車 Brussels↔Bruges 來回（7/9 現場購票・估）',city:'布魯塞爾',amount:32.00,url:'https://www.belgiantrain.be/en'},
   {desc:'Danse contemporaine Peter Goss（7/16 現場付）',city:'巴黎',amount:20.00,url:'https://micadanses.com'},
+  {desc:'巴黎市區散票 7/20-7/21（約6趟 ×€2.55・估）',city:'巴黎',amount:15.30,url:'https://www.bonjour-ratp.fr/en/'},
+  {desc:'RER B → CDG 機場票 Paris Region↔Airports（7/22）',city:'巴黎',amount:14.00,url:'https://www.bonjour-ratp.fr/en/titres-tarifs/ticket-paris-region-aeroports/'},
   {desc:'Navigo Découverte 卡＋週票（7/13 起，僅涵蓋至7/19）',city:'巴黎',amount:37.40,url:'https://www.navigo.fr'},
 ];
 let active='ams';
@@ -394,10 +406,8 @@ function renderSec(){
       </div>`;
     }).join(''):'<p class="empty-hint">尚未新增活動</p>';
     const catOpts=CATS.map(c=>`<option value="${c.val}">${c.label}</option>`).join('');
-    const dpr=getDPR();
-    const dprBadge=`<span style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;background:${dpr>=30?'#E1F5EE':dpr>=20?'#FAEEDA':'#FAECE7'};color:${dpr>=30?'#085041':dpr>=20?'#633806':'#4A1B0C'};font-weight:600">💡 €${dpr.toFixed(0)}/天</span>`;
     h+=`<div class="day-block">
-      <div class="day-header"><span class="day-label">第 ${i+1} 天</span><span class="day-date">${fmt(d)}</span>${badgeHtml}${dprBadge}</div>
+      <div class="day-header"><span class="day-label">第 ${i+1} 天</span><span class="day-date">${fmt(d)}</span>${badgeHtml}</div>
       <div class="activities-wrap">
         ${actsHtml}
         <div class="add-section">
@@ -453,12 +463,43 @@ function buildBudget(){
   const remain=limit-totalCommitted;
   const pct=limit?Math.min(100,Math.round(totalCommitted/limit*100)):0;
   const barColor=pct>=90?'#E24B4A':pct>=70?'#BA7517':'#1D9E75';
-  const tripStart=new Date('2026-06-22');
-  const tripEnd=new Date('2026-07-22');
-  const today=new Date();
-  const totalTripDays=31;
-  const daysLeft=today<tripStart?totalTripDays:today>tripEnd?1:Math.max(1,Math.ceil((tripEnd-today)/(1000*60*60*24)));
-  const dpr=remain>0?remain/daysLeft:-1;
+  // ── 每日預估花費（依實際日期、剩餘行程天數動態平均）──
+  const tripStart=new Date('2026-06-22T00:00:00');
+  const tripEnd=new Date('2026-07-22T00:00:00'); // 歐洲最後消費日（7/22離開）
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const DAY=1000*60*60*24;
+  const totalTripDays=Math.round((tripEnd-tripStart)/DAY)+1; // 含頭尾=31
+  let tripStatus, dayNo=0, daysLeft;
+  if(today<tripStart){
+    tripStatus='before'; daysLeft=totalTripDays;
+  } else if(today>tripEnd){
+    tripStatus='after'; daysLeft=0;
+  } else {
+    tripStatus='during';
+    dayNo=Math.round((today-tripStart)/DAY)+1;       // 今天是第幾天
+    daysLeft=Math.round((tripEnd-today)/DAY)+1;        // 剩餘天數（含今天）
+  }
+  // 可自由支配的剩餘預算（帳戶餘額 − 已付 − 待付）
+  const freeBudget=remain;
+  const dpr=(daysLeft>0 && freeBudget>0)?freeBudget/daysLeft:(freeBudget<=0?0:-1);
+  const mmdd=(today.getMonth()+1)+'/'+today.getDate();
+  let dprNote;
+  if(tripStatus==='before') dprNote='尚未出發 · 今天 '+mmdd+' · 全程 '+totalTripDays+' 天';
+  else if(tripStatus==='after') dprNote='行程已結束 · 今天 '+mmdd;
+  else dprNote='行程第 '+dayNo+' 天 · 今天 '+mmdd+' · 剩餘 '+daysLeft+' 天';
+  const dprColor=dpr<0?'#E24B4A':dpr<30?'#BA7517':'#1D9E75';
+  const dprValue=tripStatus==='after'?'—':(dpr<0?'超支':'€'+dpr.toFixed(2));
+  const dailyCard=`
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">每日預估花費 <span style="font-size:11px;color:#aaa;font-weight:400">依剩餘實際天數平均</span></div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
+      <div style="font-size:28px;font-weight:800;color:${dprColor}">${dprValue}</div>
+      <div style="font-size:13px;color:#888">${tripStatus==='after'?'':'／ 天'}</div>
+    </div>
+    <div style="font-size:12px;color:#888">${dprNote}</div>
+    <div style="font-size:12px;color:#aaa;margin-top:4px">剩餘可自由支配 €${freeBudget.toFixed(2)} ÷ ${daysLeft>0?daysLeft:0} 天</div>
+  </div>`;
   const byCat={};
   budget.expenses.forEach(e=>{byCat[e.cat]=(byCat[e.cat]||0)+(parseFloat(e.amount)||0);});
   const catRows=EXP_CATS.map(c=>{const n=byCat[c.val]||0;if(!n)return'';return`<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>${c.label}</span><span style="font-weight:600">€${n.toFixed(2)}</span></div>`;}).join('');
@@ -500,7 +541,7 @@ function buildBudget(){
     <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">旅程總預算概覽</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem">
       <span style="font-size:13px;color:#888">帳戶餘額 €</span>
-      <input type="number" step="0.01" value="${budget.limit}" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px;font-weight:600;color:#1D9E75" oninput="budget.limit=parseFloat(this.value)||0;renderSec();saveData()"/>
+      <input type="number" inputmode="decimal" step="0.01" value="${budget.limit}" class="no-spin" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px;font-weight:600;color:#1D9E75" onchange="budget.limit=parseFloat(this.value)||0;renderSec();saveData()"/>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem">
       <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
@@ -528,6 +569,8 @@ function buildBudget(){
       <span>預算上限：€${limit.toFixed(2)}</span>
     </div>
   </div>
+
+  ${dailyCard}
 
   ${catRows?`<div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem"><div style="font-size:14px;font-weight:600;margin-bottom:.5rem">按類別統計（已付）</div>${catRows}</div>`:''}
 
@@ -656,7 +699,7 @@ async function refreshPdfButtons(){
 const STORAGE_KEY = 'europe_trip_2026';
 // 每次由 Claude 更新 HTML 內建行程時，這個版本號會改變。
 // 開啟時若瀏覽器存的版本與此不符，代表 HTML 內容較新 → 以 HTML 為準（捨棄舊的本機暫存）。
-const DATA_VERSION = '2026-06-16-audit';
+const DATA_VERSION = '2026-06-21-rotarrival';
 
 function saveData() {
   try {
