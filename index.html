@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<html lang="zh-TW"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Europe Trip 2026</title>
@@ -88,13 +86,190 @@ input,select,button{font-family:inherit}
 <body>
 <h2>✈️ 歐洲行程 2026</h2>
 <div class="save-bar">
-  <span class="save-dot" id="save-dot"></span>
-  <span id="save-status">資料已自動儲存</span>
+  <span class="save-dot" id="save-dot" style="background: rgb(29, 158, 117);"></span>
+  <span id="save-status">已儲存 下午02:45</span>
   <button class="reset-btn" onclick="exportHTML()" style="background:#534AB7;color:#fff;border-color:#534AB7">⬇ 下載 HTML</button>
   <button class="reset-btn" onclick="resetAll()">重置資料</button>
 </div>
-<div class="tabs" id="tabs"></div>
-<div id="sections"></div>
+<div class="tabs" id="tabs">
+    <button class="tab " onclick="sw('ams')">🇳🇱阿姆斯特丹</button>
+    <button class="tab " onclick="sw('rot')">🇳🇱鹿特丹</button>
+    <button class="tab " onclick="sw('bru')">🇧🇪布魯塞爾</button>
+    <button class="tab " onclick="sw('par')">🇫🇷巴黎</button>
+    <button class="tab active" onclick="sw('budget')">💰 記帳</button>
+    <button class="tab " onclick="sw('summary')">📋 總覽</button></div>
+<div id="sections">
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">旅程總預算概覽</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem">
+      <span style="font-size:13px;color:#888">帳戶餘額 €</span>
+      <input type="number" inputmode="decimal" step="0.01" value="1163" class="no-spin" style="width:130px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:14px;font-weight:600;color:#1D9E75" onchange="budget.limit=parseFloat(this.value)||0;renderSec();saveData()">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem">
+      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
+        <div style="font-size:11px;color:#888;margin-bottom:2px">帳戶餘額</div>
+        <div style="font-size:18px;font-weight:700;color:#1D9E75">€1163.00</div>
+      </div>
+      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
+        <div style="font-size:11px;color:#888;margin-bottom:2px">預計剩餘（扣待付）</div>
+        <div style="font-size:18px;font-weight:700;color:#1D9E75">€605.52</div>
+      </div>
+      <div style="background:#f8f8f6;border-radius:8px;padding:.6rem .75rem">
+        <div style="font-size:11px;color:#888;margin-bottom:2px">已付清</div>
+        <div style="font-size:18px;font-weight:700;color:#E24B4A">€390.12</div>
+      </div>
+      <div style="background:#FAEEDA;border-radius:8px;padding:.6rem .75rem;border:1px solid #FAC775">
+        <div style="font-size:11px;color:#633806;margin-bottom:2px">⚠️ 待付（含0項待確認）</div>
+        <div style="font-size:18px;font-weight:700;color:#BA7517">€167.36+</div>
+      </div>
+    </div>
+    <div style="background:#eee;border-radius:4px;height:10px;overflow:hidden;margin-bottom:4px">
+      <div style="height:100%;border-radius:4px;background:#1D9E75;width:48%;transition:width .3s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#888">
+      <span>已付＋待付：€557.48 (48%)</span>
+      <span>預算上限：€1163.00</span>
+    </div>
+  </div>
+
+  
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">每日預估花費 <span style="font-size:11px;color:#aaa;font-weight:400">依剩餘實際天數平均</span></div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
+      <div style="font-size:28px;font-weight:800;color:#BA7517">€21.63</div>
+      <div style="font-size:13px;color:#888">／ 天</div>
+    </div>
+    <div style="font-size:12px;color:#888">行程第 4 天 · 今天 6/25 · 剩餘 28 天</div>
+    <div style="font-size:12px;color:#aaa;margin-top:4px">剩餘可自由支配 €605.52 ÷ 28 天</div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem"><div style="font-size:14px;font-weight:600;margin-bottom:.5rem">按類別統計（已付）</div><div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>餐飲</span><span style="font-weight:600">€89.16</span></div><div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>交通</span><span style="font-weight:600">€89.21</span></div><div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>門票/景點</span><span style="font-weight:600">€168.25</span></div><div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0"><span>其他</span><span style="font-weight:600">€16.00</span></div></div>
+
+  
+  <div style="background:#fff;border:1px solid #FAC775;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem;color:#633806">⚠️ 待付清單 <span style="font-size:12px;font-weight:400">— 預估共 €167.36（另有0項待確認）</span></div>
+    
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">火車 Ede-Wageningen→Rotterdam 回程（6/27 現場購票・估）</div>
+        <div style="font-size:11px;color:#aaa">荷蘭</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€16.50</div>
+      <a href="https://www.ns.nl/en" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(0)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Bus 108 Ede↔Otterlo 來回（6/27 現場購票・估）</div>
+        <div style="font-size:11px;color:#aaa">荷蘭</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€8.00</div>
+      
+      <button onclick="delPending(1)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">NS 火車 Den Haag→Rotterdam 回程（6/28 現場購票）</div>
+        <div style="font-size:11px;color:#aaa">荷蘭</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€4.16</div>
+      <a href="https://www.ns.nl/en" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(2)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">TIC TAC Contact Improv Jam（7/5 現場付）</div>
+        <div style="font-size:11px;color:#aaa">布魯塞爾</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€15.00</div>
+      <a href="https://tictacartcentre.com/event-category/tictac-classes/" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(3)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">OUIGO 大行李加購（7/13 出發前線上加購較省）</div>
+        <div style="font-size:11px;color:#aaa">布魯塞爾</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€5.00</div>
+      <a href="https://www.sncf-connect.com/en-en/" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(4)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">火車 Brussels↔Bruges 來回（7/9 現場購票・估）</div>
+        <div style="font-size:11px;color:#aaa">布魯塞爾</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€32.00</div>
+      <a href="https://www.belgiantrain.be/en" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(5)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Danse contemporaine Peter Goss（7/16 現場付）</div>
+        <div style="font-size:11px;color:#aaa">巴黎</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€20.00</div>
+      <a href="https://micadanses.com" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(6)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">巴黎市區散票 7/20-7/21（約6趟 ×€2.55・估）</div>
+        <div style="font-size:11px;color:#aaa">巴黎</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€15.30</div>
+      <a href="https://www.bonjour-ratp.fr/en/" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(7)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">RER B → CDG 機場票 Paris Region↔Airports（7/22）</div>
+        <div style="font-size:11px;color:#aaa">巴黎</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€14.00</div>
+      <a href="https://www.bonjour-ratp.fr/en/titres-tarifs/ticket-paris-region-aeroports/" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(8)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">Navigo Découverte 卡＋週票（7/13 起，僅涵蓋至7/19）</div>
+        <div style="font-size:11px;color:#aaa">巴黎</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#BA7517">€37.40</div>
+      <a href="https://www.navigo.fr" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC;text-decoration:none;white-space:nowrap">購買 ↗</a>
+      <button onclick="delPending(9)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px;padding:0 2px">✕</button>
+    </div>
+    <div style="margin-top:.75rem;border-top:1px solid #f5e8c8;padding-top:.65rem">
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px">
+        <input id="pd" placeholder="項目名稱" style="flex:2;min-width:120px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px">
+        <input id="pc" placeholder="城市" style="flex:1;min-width:80px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px">
+        <input id="pa" type="number" step="0.01" placeholder="金額（選填）" style="flex:1;min-width:90px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px">
+      </div>
+      <div style="display:flex;gap:5px">
+        <input id="pu" placeholder="購票網址（選填）" style="flex:1;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:12px">
+        <button onclick="addPending()" style="border:1px solid #FAC775;border-radius:8px;padding:5px 12px;font-size:12px;background:#FAEEDA;color:#633806;cursor:pointer;white-space:nowrap">新增</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.75rem">新增消費</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+      <input id="ed" type="date" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:1;min-width:130px">
+      <input id="ea" type="number" placeholder="金額 (EUR)" step="0.01" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:1;min-width:100px">
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+      <input id="edesc" placeholder="備註" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:13px;flex:2;min-width:150px">
+      <select id="ecat" style="border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-size:13px;flex:1"><option value="food">餐飲</option><option value="transport">交通</option><option value="sight">門票/景點</option><option value="shop">購物</option><option value="hotel">住宿</option><option value="other">其他</option></select>
+      <select id="ecity" style="border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-size:13px;flex:1"><option value="阿姆斯特丹">阿姆斯特丹</option><option value="鹿特丹">鹿特丹</option><option value="布魯塞爾">布魯塞爾</option><option value="巴黎">巴黎</option></select>
+    </div>
+    <button onclick="addExp()" style="border:1px solid #ccc;border-radius:8px;padding:6px 16px;font-size:13px;background:#fff;cursor:pointer;width:100%">新增消費紀錄</button>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem">
+    <div style="font-size:14px;font-weight:600;margin-bottom:.5rem">已付消費紀錄 <span style="font-size:12px;color:#aaa;font-weight:400">31 筆</span></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">捷運來回</div><div style="font-size:11px;color:#aaa">2026-06-25 · 鹿特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€3.30</div><button onclick="delExp(30)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Supermarkets</div><div style="font-size:11px;color:#aaa">2026-06-25 · 鹿特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€10.21</div><button onclick="delExp(29)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">咖啡</div><div style="font-size:11px;color:#aaa">2026-06-24 · 鹿特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€4.90</div><button onclick="delExp(28)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">捷運</div><div style="font-size:11px;color:#aaa">2026-06-24 · 鹿特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€1.40</div><button onclick="delExp(27)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">火車</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€20.20</div><button onclick="delExp(26)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">咖啡</div><div style="font-size:11px;color:#aaa">2026-06-24 · 阿姆斯特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€4.90</div><button onclick="delExp(25)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Lunch</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€23.50</div><button onclick="delExp(24)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">唱片</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€21.00</div><button onclick="delExp(23)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">咖啡</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€1.87</div><button onclick="delExp(22)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">早餐</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€3.48</div><button onclick="delExp(21)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">寄放行李</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 其他</div></div><div style="font-size:14px;font-weight:700">€16.00</div><button onclick="delExp(20)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">火車</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€7.10</div><button onclick="delExp(19)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Contempo par Manon Pierre — Authentic Dance Company（Micadanses）｜票號 191500184｜7/20 18:30</div><div style="font-size:11px;color:#aaa">2026-07-20 · 巴黎 · 其他</div></div><div style="font-size:14px;font-weight:700">€15.00</div><button onclick="delExp(18)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Pinault Collection 皮諾美術館（Bourse de Commerce）｜7/15</div><div style="font-size:11px;color:#aaa">2026-07-15 · 巴黎 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€15.00</div><button onclick="delExp(17)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">WIELS 當代藝術中心｜訂位代號 TRW3DJBY8｜7/1 11:00</div><div style="font-size:11px;color:#aaa">2026-07-01 · 布魯塞爾 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€12.00</div><button onclick="delExp(16)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">比利時皇家美術館 Old Masters + Magritte｜票號：KM5184393731180051｜7/10 10:00</div><div style="font-size:11px;color:#aaa">2026-07-10 · 布魯塞爾 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€20.00</div><button onclick="delExp(15)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">De Halve Maan Classic Tour ENGLISH｜訂單：6850941｜7/9 13:30</div><div style="font-size:11px;color:#aaa">2026-07-09 · 布魯塞爾 · 餐飲</div></div><div style="font-size:14px;font-weight:700">€16.00</div><button onclick="delExp(14)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Dansateliers Movement Class — Ashley &amp; Domenik｜票號：ST4604602485983｜6/29 20:00</div><div style="font-size:11px;color:#aaa">2026-06-29 · 鹿特丹 · 其他</div></div><div style="font-size:14px;font-weight:700">€5.00</div><button onclick="delExp(13)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Dansateliers ARK Movement Class — Majon van der Schot｜票號：ST1760381373351｜6/24 20:00</div><div style="font-size:11px;color:#aaa">2026-06-24 · 鹿特丹 · 其他</div></div><div style="font-size:14px;font-weight:700">€7.50</div><button onclick="delExp(12)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Escher in The Palace｜票號：774213626626760125｜有效期一年（不限日期）</div><div style="font-size:11px;color:#aaa">2026-06-06 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€14.50</div><button onclick="delExp(11)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Mauritshuis + Prince William V Gallery｜票號：771192168523496551｜6/28 10:00</div><div style="font-size:11px;color:#aaa">2026-06-28 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€24.00</div><button onclick="delExp(10)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">NS 火車｜Rotterdam → Ede-Wageningen 去程｜6/27</div><div style="font-size:11px;color:#aaa">2026-06-27 · 鹿特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€16.50</div><button onclick="delExp(9)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">NS Sprinter｜Rotterdam Centraal → Den Haag Centraal｜訂單：E544147620｜6/28 09:06</div><div style="font-size:11px;color:#aaa">2026-06-28 · 鹿特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€4.16</div><button onclick="delExp(8)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56912｜6/26</div><div style="font-size:11px;color:#aaa">2026-06-26 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€10.00</div><button onclick="delExp(7)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Conny Janssen Danst — Open Class 當代舞 Merel Lammers｜票號：56853｜6/25</div><div style="font-size:11px;color:#aaa">2026-06-25 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€10.00</div><button onclick="delExp(6)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56892｜6/24</div><div style="font-size:11px;color:#aaa">2026-06-24 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€10.00</div><button onclick="delExp(5)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">OUIGO Train Classique｜Brussel-Zuid → Paris Nord｜參考編號：MAKGWH｜7/13 07:37</div><div style="font-size:11px;color:#aaa">2026-07-13 · 布魯塞爾 · 交通</div></div><div style="font-size:14px;font-weight:700">€22.00</div><button onclick="delExp(4)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">EC 9260｜Rotterdam Centraal → Bruxelles-Midi｜PNR: QXFGLCM｜6/30 19:10</div><div style="font-size:11px;color:#aaa">2026-06-30 · 鹿特丹 · 交通</div></div><div style="font-size:14px;font-weight:700">€17.85</div><button onclick="delExp(3)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">Kröller-Müller Museum Day Ticket｜票號：11490100276243</div><div style="font-size:11px;color:#aaa">2026-06-27 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€13.90</div><button onclick="delExp(2)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">De Hoge Veluwe 國家公園 Day Pass｜E-ticket：2621042266</div><div style="font-size:11px;color:#aaa">2026-06-27 · 鹿特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€13.85</div><button onclick="delExp(1)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div><div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5"><div style="flex:1"><div style="font-size:13px;font-weight:600">梵谷博物館 Van Gogh Museum｜票號：771461314094463570</div><div style="font-size:11px;color:#aaa">2026-06-23 · 阿姆斯特丹 · 門票/景點</div></div><div style="font-size:14px;font-weight:700">€25.00</div><button onclick="delExp(0)" style="border:none;background:transparent;cursor:pointer;color:#ccc;font-size:16px">✕</button></div>
+  </div></div>
 <script>
 const CATS=[
   {val:'sight',label:'觀光',cls:'cat-sight'},
@@ -152,192 +327,9 @@ const CITIES=[
   {id:'budget',name:'💰 記帳',flag:'',start:null,days:0},
   {id:'summary',name:'📋 總覽',flag:'',start:null,days:0},
 ];
-const state={
-  ams:[
-  {activities:[
-    {time:'13:20',text:'✈️ KE2022｜桃園 TPE 第1航廈 出發 → 首爾仁川 ICN（16:50 抵達，第2航廈）｜經濟艙｜電腦代號：F3POQV',cat:'transport',fixed:true,mapQuery:'Taoyuan International Airport Terminal 1',ticketUrl:'',pdfUrl:'tickets/0622-flight-tpe-icn.pdf'},
-    {time:'22:25',text:'✈️ KE5925｜首爾仁川 ICN 第2航廈 出發 → 阿姆斯特丹 AMS（6/23 05:10 抵達）｜經濟艙｜免費行李1件',cat:'transport',fixed:true,mapQuery:'Incheon International Airport Terminal 2',ticketUrl:'',pdfUrl:'tickets/0622-flight-icn-ams.pdf'},
-  ]},
-  {activities:[
-    {time:'05:10',text:'抵達阿姆斯特丹史基浦機場 (KE5925)',cat:'transport',fixed:true,mapQuery:'Amsterdam Airport Schiphol',ticketUrl:'',pdfUrl:'tickets/0622-flight-icn-ams.pdf'},
-    {time:'05:30',text:'搭 Sprinter 火車進阿姆斯特丹市區 (€5.60，約15分鐘)',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
-    {time:'06:00',text:'抵達阿姆斯特丹中央車站，寄放行李（寄物櫃在車站內）',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station lockers',ticketUrl:''},
-    {time:'08:30',text:'搭電車前往梵谷博物館（電車 2/5 號到 Rijksmuseum 站，步行5分鐘）',cat:'transport',fixed:false,mapQuery:'Van Gogh Museum Amsterdam',ticketUrl:''},
-    {time:'09:00',text:'🎨 梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內，約2小時',cat:'sight',fixed:true,mapQuery:'Van Gogh Museum Museumplein 6 Amsterdam',ticketUrl:'',pdfUrl:'tickets/0623-vangogh.pdf'},
-    {time:'11:30',text:'美術館區散步＋運河邊走走、簡單午餐（低消、不趕）',cat:'food',fixed:false,mapQuery:'Museumplein Amsterdam',ticketUrl:''},
-    {time:'14:00',text:'回阿姆斯特丹中央車站取行李',cat:'transport',fixed:false,mapQuery:'Amsterdam Centraal Station lockers',ticketUrl:''},
-    {time:'14:30',text:'車站周邊逛逛 — 運河、Damrak、商店街',cat:'sight',fixed:false,mapQuery:'Damrak Amsterdam',ticketUrl:''},
-    {time:'15:49',text:'搭 NS Sprinter 直達鹿特丹（往 Rotterdam Centraal，0換車，€20.20）｜2樓月台2b',cat:'transport',fixed:true,mapQuery:'Amsterdam Centraal Station',ticketUrl:'https://www.ns.nl/en'},
-    {time:'17:04',text:'抵達 Rotterdam Centraal（16號月台，右側下車）',cat:'transport',fixed:true,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
-    {time:'17:15',text:'前往朋友家 Cleyburchstraat 40-A（Oude Noorden）｜方案A：站前搭 Tram 4(往Molenlaan) 或 6(往Kleiweg) 往北，近 Station Noord 下車步行約5分｜方案B：拖大行李建議直接叫 Uber/計程車約€12-15、8分鐘',cat:'transport',fixed:false,mapQuery:'Cleyburchstraat 40 Rotterdam',ticketUrl:''},
-  ]}],
-  rot:[
-    {activities:[{time:'19:30',text:'抵達鹿特丹 Rotterdam Centraal，前往朋友家安頓',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''}]},
-    // 6/24 芭蕾＋Dansateliers
-    {activities:[
-      {time:'09:30',text:'前往 Huis Conny Janssen Danst（地鐵至 Rijnhaven 站步行15分鐘）',cat:'transport',fixed:false,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:''},
-      {time:'10:00',text:'Open Class 芭蕾 Ballet — 老師 Mariko Shimoda｜票號：56892｜Dolf Henkesplein 3',cat:'dance',fixed:true,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:'',pdfUrl:'tickets/0624-cjd-ballet.pdf'},
-      {time:'19:45',text:'前往 Dansateliers（\'s-Gravendijkwal 58-A）',cat:'transport',fixed:false,mapQuery:"Dansateliers 's-Gravendijkwal 58 Rotterdam",ticketUrl:''},
-      {time:'20:00',text:'ARK Movement Class — 老師 Majon van der Schot｜票號：ST1760381373351｜結束 22:00',cat:'dance',fixed:true,mapQuery:"Dansateliers 's-Gravendijkwal 58 Rotterdam",ticketUrl:'',pdfUrl:'tickets/0624-dansateliers-ark.pdf'},
-    ]},
-    // 6/25 當代舞
-    {activities:[
-      {time:'09:30',text:'前往 Huis Conny Janssen Danst（入口在 "DOCKS" 標示下方）',cat:'transport',fixed:false,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:''},
-      {time:'10:00',text:'Open Class 當代舞 Contemporary — 老師 Merel Lammers｜票號：56853｜Dolf Henkesplein 3',cat:'dance',fixed:true,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:'',pdfUrl:'tickets/0625-cjd-contemporary.pdf'},
-    ]},
-    // 6/26 芭蕾
-    {activities:[
-      {time:'09:30',text:'前往 Huis Conny Janssen Danst',cat:'transport',fixed:false,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:''},
-      {time:'10:00',text:'Open Class 芭蕾 Ballet — 老師 Mariko Shimoda｜票號：56912｜Dolf Henkesplein 3',cat:'dance',fixed:true,mapQuery:'Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam',ticketUrl:'',pdfUrl:'tickets/0626-cjd-ballet.pdf'},
-    ]},
-    {activities:[
-      {time:'07:31',text:'Rotterdam Centraal 出發 → Utrecht Centraal 轉車 → Ede-Wageningen（週六首班，約1h15m）',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:'https://www.ns.nl/en',pdfUrl:'tickets/0627-train-ede-wageningen.pdf'},
-      {time:'08:50',text:'抵達 Ede-Wageningen，等候 Bus 108（週六首班 09:09）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:''},
-      {time:'09:09',text:'搭 Bus 108 往 Apeldoorn → Otterlo Rotonde 下車（約17分鐘）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station bus stop',ticketUrl:''},
-      {time:'09:30',text:'抵達 De Hoge Veluwe 國家公園入口，掃公園票入場（E-ticket: 2621042266）',cat:'transport',fixed:true,mapQuery:'De Hoge Veluwe National Park Otterlo entrance',ticketUrl:'',pdfUrl:'tickets/0627-hogeveluwe-park.pdf'},
-      {time:'09:35',text:'🚲 借免費白色自行車，騎車穿梭森林、沙丘、荒野探索公園',cat:'adv',fixed:false,mapQuery:'De Hoge Veluwe National Park bicycle workshop',ticketUrl:''},
-      {time:'11:00',text:'🎨 Kröller-Müller Museum — 梵谷第二大典藏90幅＋現代藝術｜美術館票：11490100276243',cat:'sight',fixed:true,mapQuery:'Kröller-Müller Museum Houtkampweg 6 Otterlo',ticketUrl:'https://krollermuller.nl/en/visit',pdfUrl:'tickets/0627-krollermuller.pdf'},
-      {time:'13:30',text:'Park Restaurant 午餐（廚房10:30開）',cat:'food',fixed:false,mapQuery:'Kröller-Müller Museum restaurant',ticketUrl:''},
-      {time:'14:30',text:'🗿 戶外雕塑公園 Sculpture Garden — Rodin、Giacometti、Mondrian 等160件，全歐最大！',cat:'sight',fixed:false,mapQuery:'Kröller-Müller Museum sculpture garden',ticketUrl:''},
-      {time:'16:30',text:'🚲 繼續騎車探索公園 — Jachthuis Sint Hubertus 獵莊（Art Deco建築）或沙丘區',cat:'adv',fixed:false,mapQuery:'Jachthuis Sint Hubertus De Hoge Veluwe',ticketUrl:''},
-      {time:'18:30',text:'還車，搭 Bus 108 回 Ede-Wageningen（每小時一班）',cat:'transport',fixed:false,mapQuery:'Otterlo Rotonde bus stop',ticketUrl:''},
-      {time:'19:00',text:'Ede-Wageningen 搭火車回 Rotterdam Centraal（轉 Utrecht，約1h15m）',cat:'transport',fixed:false,mapQuery:'Ede-Wageningen Station',ticketUrl:'https://www.ns.nl/en'},
-      {time:'20:30',text:'抵達鹿特丹',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:''},
-    ]},
-    {activities:[
-      {time:'09:30',text:'Rotterdam Centraal 出發 → Den Haag Centraal（約25分鐘，NS火車，週日 off-peak）',cat:'transport',fixed:false,mapQuery:'Rotterdam Centraal Station',ticketUrl:'https://www.ns.nl/en',pdfUrl:'tickets/0628-train-denhaag.pdf'},
-      {time:'10:00',text:'莫瑞泰斯美術館 Mauritshuis — 維梅爾《戴珍珠耳環的少女》、林布蘭等大師作品',cat:'sight',fixed:false,mapQuery:'Mauritshuis Den Haag',ticketUrl:'https://www.mauritshuis.nl/en/your-visit/tickets/',pdfUrl:'tickets/0628-mauritshuis.pdf'},
-      {time:'12:30',text:'海牙市中心午餐',cat:'food',fixed:false,mapQuery:'Den Haag city center restaurants',ticketUrl:''},
-      {time:'14:00',text:'埃舍爾博物館 Escher in het Paleis（選擇性）— 視覺錯覺藝術，超有趣',cat:'sight',fixed:false,mapQuery:'Escher in het Paleis Den Haag',ticketUrl:'https://www.escherinhetpaleis.nl/',pdfUrl:'tickets/0628-escher.pdf'},
-      {time:'16:00',text:'Scheveningen 海灘散步（海牙海邊，電車約20分鐘）',cat:'adv',fixed:false,mapQuery:'Scheveningen Beach Den Haag',ticketUrl:''},
-      {time:'18:30',text:'搭火車回鹿特丹（約25分鐘）',cat:'transport',fixed:false,mapQuery:'Den Haag Centraal Station',ticketUrl:'https://www.ns.nl/en'},
-    ]},
-    {activities:[
-      {time:'19:30',text:'Movement Class — Ashley & Domenik（Dansateliers, s-Gravendijkwal 58-A）｜開門19:30/上課20:00/結束21:30｜票號 ST4604602485983',cat:'dance',fixed:true,mapQuery:"Dansateliers 's-Gravendijkwal 58 Rotterdam",ticketUrl:'',pdfUrl:'tickets/0629-dansateliers-movement.pdf'},
-    ]},
-  ],
-  bru:[
-    {activities:[
-      {time:'19:10',text:'EC 9260｜Rotterdam Centraal 出發 → Bruxelles-Midi（2h7m，直達）｜PNR: QXFGLCM',cat:'transport',fixed:true,mapQuery:'Rotterdam Centraal Station',ticketUrl:'',pdfUrl:'tickets/0630-train-ec9260.pdf'},
-      {time:'21:17',text:'抵達 Bruxelles-Midi，前往住處安頓',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:''},
-    ]},
-    {activities:[{time:'11:00',text:'🎨 WIELS 當代藝術中心 — 啤酒廠改建｜Lutz Bacher「Burning the Days」＋群展「On Debt」＋「Call me gravity」｜€12｜開放11:00-18:00｜訂位代號 TRW3DJBY8',cat:'sight',fixed:true,mapQuery:'WIELS Avenue Van Volxem 354 Brussels',ticketUrl:'https://wiels.org/en',pdfUrl:'tickets/0701-wiels.pdf'}]},
-    {activities:[{time:'19:00',text:"🎤 BTS WORLD TOUR 'ARIRANG' — King Baudouin Stadium（地鐵2號線 Heysel 站）",cat:'night',fixed:true,mapQuery:'King Baudouin Stadium Brussels',ticketUrl:'',pdfUrl:'tickets/0702-bts-arirang.pdf'}]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[{time:'19:30',text:'TIC TAC Contact Improv Jam — 引導開場 14:00，CI Jam 15:00–18:00',cat:'dance',fixed:false,mapQuery:'Tictac Art Centre Brussels Rue Emile Carpentier 34',ticketUrl:'https://tictacartcentre.com/event-category/tictac-classes/',pdfUrl:'tickets/0705-tictac-cijam.pdf'}]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[]},
-    {activities:[
-      {time:'06:00',text:'布魯塞爾中央站出發往布魯日（車程約55分鐘）',cat:'transport',fixed:false,mapQuery:'Brussels Central Station',ticketUrl:'https://www.belgiantrain.be/en'},
-      {time:'07:00',text:'抵達布魯日 Bruges',cat:'transport',fixed:false,mapQuery:'Bruges Train Station',ticketUrl:''},
-      {time:'09:00',text:'De Halve Maan 半月啤酒廠 — Classic Tour 導覽€16，屋頂360°景觀＋1杯啤酒，約45分鐘（⚠️ 220階樓梯，穿舒適鞋！）',cat:'food',fixed:false,mapQuery:'De Halve Maan Brewery Bruges',ticketUrl:'https://www.halvemaan.be/en/visit/brewery',pdfUrl:'tickets/0709-halvemaan.pdf'},
-      {time:'11:00',text:'布魯日老城漫步 — 市集廣場、鐘樓、運河',cat:'sight',fixed:false,mapQuery:'Markt Bruges Belgium',ticketUrl:''},
-      {time:'13:00',text:'午餐 — 老城區比利時燉牛肉或薯條',cat:'food',fixed:false,mapQuery:'restaurants Markt Bruges',ticketUrl:''},
-      {time:'15:00',text:'運河遊船 Boat Tour',cat:'sight',fixed:false,mapQuery:'Bruges canal boat tour',ticketUrl:'',pdfUrl:'tickets/0709-bruges-boat.pdf'},
-      {time:'21:00',text:'搭火車回布魯塞爾（末班 23:22）',cat:'transport',fixed:false,mapQuery:'Bruges Train Station',ticketUrl:'https://www.belgiantrain.be/en'},
-      {time:'22:00',text:'抵達布魯塞爾中央站',cat:'transport',fixed:false,mapQuery:'Brussels Central Station',ticketUrl:''},
-    ]},
-    {activities:[
-      {time:'10:00',text:'🎨 比利時皇家美術館 — Old Masters Museum（15-18世紀：布勒哲爾、魯本斯、林布蘭等）｜含 Magritte Museum 雙館聯票 €20｜票號 KM5184393731180051',cat:'sight',fixed:true,mapQuery:'Royal Museums of Fine Arts of Belgium Rue de la Régence 3 Brussels',ticketUrl:'https://www.fine-arts-museum.be/en/visit',pdfUrl:'tickets/0710-oldmasters-magritte.pdf'},
-      {time:'13:00',text:'🎨 馬格利特美術館 Magritte Museum — 230+件超現實主義作品、檔案、廣告海報｜與上方同一張聯票',cat:'sight',fixed:false,mapQuery:'Magritte Museum Place Royale 1 Brussels',ticketUrl:'https://www.fine-arts-museum.be/en/visit',pdfUrl:'tickets/0710-oldmasters-magritte.pdf'},
-    ]},
-    {activities:[]},
-    {activities:[
-      {time:'',text:'布魯塞爾自由日 — 多留一晚（隔天 7/13 才搭 OUIGO 前往巴黎）',cat:'adv',fixed:false,mapQuery:'Brussels Belgium',ticketUrl:''},
-    ]},
-    {activities:[]},
-  ],
-  par:[
-    // 7/13 週一 抵達＋消防員舞會
-    {activities:[
-      {time:'07:37',text:'OUIGO｜Bruxelles-Midi (Brussel-Zuid) 出發 → Paris Nord（直達，2h58m）｜€22｜參考編號：MAKGWH',cat:'transport',fixed:true,mapQuery:'Brussels Midi Station',ticketUrl:'',pdfUrl:'tickets/0713-train-ouigo.pdf'},
-      {time:'',text:'⚠️ 出發前先上 SNCF Connect「我的訂單」加購大行李 €5（現場才付要 €20）｜OUIGO 免費僅含 55×35×25cm 隨身箱',cat:'transport',fixed:false,mapQuery:'',ticketUrl:'https://www.sncf-connect.com/en-en/'},
-      {time:'10:35',text:'抵達 Paris Gare du Nord — 辦 Navigo Découverte 卡（€5）＋加值週票（€32.40）',cat:'transport',fixed:true,mapQuery:'Paris Gare du Nord',ticketUrl:''},
-      {time:'11:00',text:'搭 RER B → Saint-Michel Notre-Dame 站（約10分鐘）',cat:'transport',fixed:false,mapQuery:'Saint-Michel Notre-Dame RER Station Paris',ticketUrl:''},
-      {time:'11:30',text:'抵達住處 — 6 Place Saint-Michel 🎉',cat:'transport',fixed:false,mapQuery:'Place Saint-Michel Paris',ticketUrl:''},
-      {time:'21:00',text:'🎆 消防員舞會 Bal des Pompiers — 免費入場（Caserne Montmartre 或 Caserne Bitche）',cat:'night',fixed:false,mapQuery:'Caserne Montmartre Paris 12 rue Carpeaux',ticketUrl:''},
-    ]},
-    // 7/14 週二 國慶日＋La Félicità
-    {activities:[
-      {time:'',text:'🇫🇷 法國國慶日 — 香榭麗舍大道閱兵（10:00起）',cat:'sight',fixed:false,mapQuery:'Champs-Élysées Paris',ticketUrl:''},
-      {time:'19:00',text:'La Félicità — 超大義式食堂，巴黎13區（週二 08:30–00:00）',cat:'food',fixed:false,mapQuery:'La Felicita 5 Parv Alan Turing Paris 13',ticketUrl:''},
-    ]},
-    // 7/15 週三 皮諾美術館
-    {activities:[
-      {time:'11:00',text:'Pinault Collection 皮諾美術館（Bourse de Commerce）— 含 Fujiko Nakaya 霧雕塑裝置｜€15',cat:'sight',fixed:false,mapQuery:'Bourse de Commerce 2 Rue de Viarmes Paris',ticketUrl:'https://www.pinaultcollection.com/en/boursedecommerce',pdfUrl:'tickets/0715-pinault.pdf'},
-    ]},
-    // 7/16 週四 舞蹈課
-    {activities:[
-      {time:'12:00',text:'Danse contemporaine — Peter Goss（當代舞，12:00–14:00）｜Studio Biped, Micadanses, 16 rue Geoffroy l\'Asnier｜現場付費 €20',cat:'dance',fixed:false,mapQuery:"Micadanses 16 rue Geoffroy l'Asnier 75004 Paris",ticketUrl:'https://micadanses.com'},
-    ]},
-    // 7/17 週五 購物三店
-    {activities:[
-      {time:'11:00',text:'Episode — 2區 Rue Tiquetonne，平價挖寶（開到 20:00）',cat:'shop',fixed:false,mapQuery:'Episode 12 Rue Tiquetonne Paris',ticketUrl:''},
-      {time:'13:00',text:'Kiliwatch — 同街64號，設計孤品（用力翻！）',cat:'shop',fixed:false,mapQuery:'Kiliwatch 64 Rue Tiquetonne Paris',ticketUrl:''},
-      {time:'15:00',text:'步行15分鐘 → Thanx God I\'m a V.I.P. — 10區 Rue de Lancry，70年代洋裝＋老絲巾（開到 20:00）',cat:'shop',fixed:false,mapQuery:"Thanx God I'm a VIP 12 Rue de Lancry Paris",ticketUrl:''},
-    ]},
-    // 7/18 週六 Celia Darling
-    {activities:[
-      {time:'12:00',text:'Celia Darling Vintage — 9區 Rue Henry Monnier，飾品CP值最高（12:00–19:00）',cat:'shop',fixed:false,mapQuery:'Celia Darling 5 Rue Henry Monnier Paris 9',ticketUrl:''},
-    ]},
-    // 7/19 週日
-    {activities:[]},
-    // 7/20 週一 舞蹈課
-    {activities:[
-      {time:'18:30',text:'Contempo par Manon Pierre — Authentic Dance Company（當代舞，18:30–20:00）｜Micadanses Studio Noces, 20 Rue Geoffroy l\'Asnier｜€15 已購票｜票號 191500184｜門碼 2470・studio 1407',cat:'dance',fixed:false,mapQuery:"Micadanses 20 Rue Geoffroy l'Asnier 75004 Paris",ticketUrl:'https://www.helloasso.com',pdfUrl:'tickets/0720-micadanses-contempo.pdf'},
-    ]},
-    // 7/21 週二
-    {activities:[]},
-    // 7/22 週三 回程
-    {activities:[
-      {time:'11:00',text:'出發前往戴高樂機場 (RER B，約35分鐘，Saint-Michel直達CDG)',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport',ticketUrl:''},
-      {time:'14:40',text:'✈️ KE5902｜巴黎戴高樂 CDG 2E航廈 出發 → 首爾仁川 ICN（7/23 09:35 抵達，第2航廈）｜經濟艙｜電腦代號：F3POQV',cat:'transport',fixed:true,mapQuery:'Paris Charles de Gaulle Airport Terminal 2E',ticketUrl:'',pdfUrl:'tickets/0722-flight-cdg-icn.pdf'},
-    ]},
-    // 7/23 週四 — 回程轉機抵台
-    {activities:[
-      {time:'09:35',text:'抵達首爾仁川 ICN 第2航廈，等候轉機',cat:'transport',fixed:true,mapQuery:'Incheon International Airport Terminal 2',ticketUrl:''},
-      {time:'16:10',text:'✈️ KE2027｜首爾仁川 ICN 第2航廈 出發 → 桃園 TPE（17:50 抵達，第1航廈）｜經濟艙｜免費行李1件',cat:'transport',fixed:true,mapQuery:'Incheon International Airport Terminal 2',ticketUrl:'',pdfUrl:'tickets/0723-flight-icn-tpe.pdf'},
-      {time:'17:50',text:'抵達桃園國際機場 TPE 第1航廈 — 回到家 🎉',cat:'transport',fixed:true,mapQuery:'Taoyuan International Airport Terminal 1',ticketUrl:''},
-    ]},
-  ],
-};
-let budget={limit:1163,expenses:[
-  {amount:25.00,desc:'梵谷博物館 Van Gogh Museum｜票號：771461314094463570',cat:'sight',city:'阿姆斯特丹',date:'2026-06-23'},
-  {amount:13.85,desc:'De Hoge Veluwe 國家公園 Day Pass｜E-ticket：2621042266',cat:'sight',city:'鹿特丹',date:'2026-06-27'},
-  {amount:13.90,desc:'Kröller-Müller Museum Day Ticket｜票號：11490100276243',cat:'sight',city:'鹿特丹',date:'2026-06-27'},
-  {amount:17.85,desc:'EC 9260｜Rotterdam Centraal → Bruxelles-Midi｜PNR: QXFGLCM｜6/30 19:10',cat:'transport',city:'鹿特丹',date:'2026-06-30'},
-  {amount:22.00,desc:'OUIGO Train Classique｜Brussel-Zuid → Paris Nord｜參考編號：MAKGWH｜7/13 07:37',cat:'transport',city:'布魯塞爾',date:'2026-07-13'},
-  {amount:10.00,desc:'Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56892｜6/24',cat:'sight',city:'鹿特丹',date:'2026-06-24'},
-  {amount:10.00,desc:'Conny Janssen Danst — Open Class 當代舞 Merel Lammers｜票號：56853｜6/25',cat:'sight',city:'鹿特丹',date:'2026-06-25'},
-  {amount:10.00,desc:'Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56912｜6/26',cat:'sight',city:'鹿特丹',date:'2026-06-26'},
-  {amount:4.16,desc:'NS Sprinter｜Rotterdam Centraal → Den Haag Centraal｜訂單：E544147620｜6/28 09:06',cat:'transport',city:'鹿特丹',date:'2026-06-28'},
-  {amount:16.50,desc:'NS 火車｜Rotterdam → Ede-Wageningen 去程｜6/27',cat:'transport',city:'鹿特丹',date:'2026-06-27'},
-  {amount:24.00,desc:'Mauritshuis + Prince William V Gallery｜票號：771192168523496551｜6/28 10:00',cat:'sight',city:'鹿特丹',date:'2026-06-28'},
-  {amount:14.50,desc:'Escher in The Palace｜票號：774213626626760125｜有效期一年（不限日期）',cat:'sight',city:'鹿特丹',date:'2026-06-06'},
-  {amount:7.50,desc:'Dansateliers ARK Movement Class — Majon van der Schot｜票號：ST1760381373351｜6/24 20:00',cat:'dance',city:'鹿特丹',date:'2026-06-24'},
-  {amount:5.00,desc:'Dansateliers Movement Class — Ashley & Domenik｜票號：ST4604602485983｜6/29 20:00',cat:'dance',city:'鹿特丹',date:'2026-06-29'},
-  {amount:16.00,desc:'De Halve Maan Classic Tour ENGLISH｜訂單：6850941｜7/9 13:30',cat:'food',city:'布魯塞爾',date:'2026-07-09'},
-  {amount:20.00,desc:'比利時皇家美術館 Old Masters + Magritte｜票號：KM5184393731180051｜7/10 10:00',cat:'sight',city:'布魯塞爾',date:'2026-07-10'},
-  {amount:12.00,desc:'WIELS 當代藝術中心｜訂位代號 TRW3DJBY8｜7/1 11:00',cat:'sight',city:'布魯塞爾',date:'2026-07-01'},
-  {amount:15.00,desc:'Pinault Collection 皮諾美術館（Bourse de Commerce）｜7/15',cat:'sight',city:'巴黎',date:'2026-07-15'},
-  {amount:15.00,desc:'Contempo par Manon Pierre — Authentic Dance Company（Micadanses）｜票號 191500184｜7/20 18:30',cat:'dance',city:'巴黎',date:'2026-07-20'},
-]};
-let pending=[
-  {desc:'Sprinter Schiphol→Amsterdam Centraal（6/23 現場購票）',city:'荷蘭',amount:5.60,url:'https://www.ns.nl/en'},
-  {desc:'NS Sprinter Amsterdam→Rotterdam（6/23 15:49 直達・全票）',city:'荷蘭',amount:20.20,url:'https://www.ns.nl/en'},
-  {desc:'火車 Ede-Wageningen→Rotterdam 回程（6/27 現場購票・估）',city:'荷蘭',amount:16.50,url:'https://www.ns.nl/en'},
-  {desc:'Bus 108 Ede↔Otterlo 來回（6/27 現場購票・估）',city:'荷蘭',amount:8.00,url:''},
-  {desc:'NS 火車 Den Haag→Rotterdam 回程（6/28 現場購票）',city:'荷蘭',amount:4.16,url:'https://www.ns.nl/en'},
-  {desc:'TIC TAC Contact Improv Jam（7/5 現場付）',city:'布魯塞爾',amount:15.00,url:'https://tictacartcentre.com/event-category/tictac-classes/'},
-  {desc:'OUIGO 大行李加購（7/13 出發前線上加購較省）',city:'布魯塞爾',amount:5.00,url:'https://www.sncf-connect.com/en-en/'},
-  {desc:'火車 Brussels↔Bruges 來回（7/9 現場購票・估）',city:'布魯塞爾',amount:32.00,url:'https://www.belgiantrain.be/en'},
-  {desc:'Danse contemporaine Peter Goss（7/16 現場付）',city:'巴黎',amount:20.00,url:'https://micadanses.com'},
-  {desc:'巴黎市區散票 7/20-7/21（約6趟 ×€2.55・估）',city:'巴黎',amount:15.30,url:'https://www.bonjour-ratp.fr/en/'},
-  {desc:'RER B → CDG 機場票 Paris Region↔Airports（7/22）',city:'巴黎',amount:14.00,url:'https://www.bonjour-ratp.fr/en/titres-tarifs/ticket-paris-region-aeroports/'},
-  {desc:'Navigo Découverte 卡＋週票（7/13 起，僅涵蓋至7/19）',city:'巴黎',amount:37.40,url:'https://www.navigo.fr'},
-];
+const state={"ams":[{"activities":[{"time":"13:20","text":"✈️ KE2022｜桃園 TPE 第1航廈 出發 → 首爾仁川 ICN（16:50 抵達，第2航廈）｜經濟艙｜電腦代號：F3POQV","cat":"transport","fixed":true,"mapQuery":"Taoyuan International Airport Terminal 1","ticketUrl":"","pdfUrl":"tickets/0622-flight-tpe-icn.pdf"},{"time":"22:25","text":"✈️ KE5925｜首爾仁川 ICN 第2航廈 出發 → 阿姆斯特丹 AMS（6/23 05:10 抵達）｜經濟艙｜免費行李1件","cat":"transport","fixed":true,"mapQuery":"Incheon International Airport Terminal 2","ticketUrl":"","pdfUrl":"tickets/0622-flight-icn-ams.pdf"}]},{"activities":[{"time":"05:10","text":"抵達阿姆斯特丹史基浦機場 (KE5925)","cat":"transport","fixed":true,"mapQuery":"Amsterdam Airport Schiphol","ticketUrl":"","pdfUrl":"tickets/0622-flight-icn-ams.pdf"},{"time":"05:30","text":"搭 Sprinter 火車進阿姆斯特丹市區 (€5.60，約15分鐘)","cat":"transport","fixed":false,"mapQuery":"Amsterdam Centraal Station","ticketUrl":"https://www.ns.nl/en"},{"time":"06:00","text":"抵達阿姆斯特丹中央車站，寄放行李（寄物櫃在車站內）","cat":"transport","fixed":false,"mapQuery":"Amsterdam Centraal Station lockers","ticketUrl":""},{"time":"08:30","text":"搭電車前往梵谷博物館（電車 2/5 號到 Rijksmuseum 站，步行5分鐘）","cat":"transport","fixed":false,"mapQuery":"Van Gogh Museum Amsterdam","ticketUrl":""},{"time":"09:00","text":"🎨 梵谷博物館 Van Gogh Museum｜票號：771461314094463570｜⚠️ 入場限30分鐘內，約2小時","cat":"sight","fixed":true,"mapQuery":"Van Gogh Museum Museumplein 6 Amsterdam","ticketUrl":"","pdfUrl":"tickets/0623-vangogh.pdf"},{"time":"11:30","text":"美術館區散步＋運河邊走走、簡單午餐（低消、不趕）","cat":"food","fixed":false,"mapQuery":"Museumplein Amsterdam","ticketUrl":""},{"time":"14:00","text":"回阿姆斯特丹中央車站取行李","cat":"transport","fixed":false,"mapQuery":"Amsterdam Centraal Station lockers","ticketUrl":""},{"time":"14:30","text":"車站周邊逛逛 — 運河、Damrak、商店街","cat":"sight","fixed":false,"mapQuery":"Damrak Amsterdam","ticketUrl":""},{"time":"15:49","text":"搭 NS Sprinter 直達鹿特丹（往 Rotterdam Centraal，0換車，€20.20）｜2樓月台2b","cat":"transport","fixed":true,"mapQuery":"Amsterdam Centraal Station","ticketUrl":"https://www.ns.nl/en"},{"time":"17:04","text":"抵達 Rotterdam Centraal（16號月台，右側下車）","cat":"transport","fixed":true,"mapQuery":"Rotterdam Centraal Station","ticketUrl":""},{"time":"17:15","text":"前往朋友家 Cleyburchstraat 40-A（Oude Noorden）｜方案A：站前搭 Tram 4(往Molenlaan) 或 6(往Kleiweg) 往北，近 Station Noord 下車步行約5分｜方案B：拖大行李建議直接叫 Uber/計程車約€12-15、8分鐘","cat":"transport","fixed":false,"mapQuery":"Cleyburchstraat 40 Rotterdam","ticketUrl":""}]}],"rot":[{"activities":[{"time":"19:30","text":"抵達鹿特丹 Rotterdam Centraal，前往朋友家安頓","cat":"transport","fixed":false,"mapQuery":"Rotterdam Centraal Station","ticketUrl":""}]},{"activities":[{"time":"09:30","text":"前往 Huis Conny Janssen Danst（地鐵至 Rijnhaven 站步行15分鐘）","cat":"transport","fixed":false,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":""},{"time":"10:00","text":"Open Class 芭蕾 Ballet — 老師 Mariko Shimoda｜票號：56892｜Dolf Henkesplein 3","cat":"dance","fixed":true,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":"","pdfUrl":"tickets/0624-cjd-ballet.pdf"},{"time":"19:45","text":"前往 Dansateliers（'s-Gravendijkwal 58-A）","cat":"transport","fixed":false,"mapQuery":"Dansateliers 's-Gravendijkwal 58 Rotterdam","ticketUrl":""},{"time":"20:00","text":"ARK Movement Class — 老師 Majon van der Schot｜票號：ST1760381373351｜結束 22:00","cat":"dance","fixed":true,"mapQuery":"Dansateliers 's-Gravendijkwal 58 Rotterdam","ticketUrl":"","pdfUrl":"tickets/0624-dansateliers-ark.pdf"}]},{"activities":[{"time":"09:30","text":"前往 Huis Conny Janssen Danst（入口在 \"DOCKS\" 標示下方）","cat":"transport","fixed":false,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":""},{"time":"10:00","text":"Open Class 當代舞 Contemporary — 老師 Merel Lammers｜票號：56853｜Dolf Henkesplein 3","cat":"dance","fixed":true,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":"","pdfUrl":"tickets/0625-cjd-contemporary.pdf"}]},{"activities":[{"time":"09:30","text":"前往 Huis Conny Janssen Danst","cat":"transport","fixed":false,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":""},{"time":"10:00","text":"Open Class 芭蕾 Ballet — 老師 Mariko Shimoda｜票號：56912｜Dolf Henkesplein 3","cat":"dance","fixed":true,"mapQuery":"Huis Conny Janssen Danst Dolf Henkesplein 3 Rotterdam","ticketUrl":"","pdfUrl":"tickets/0626-cjd-ballet.pdf"}]},{"activities":[{"time":"07:31","text":"Rotterdam Centraal 出發 → Utrecht Centraal 轉車 → Ede-Wageningen（週六首班，約1h15m）","cat":"transport","fixed":false,"mapQuery":"Rotterdam Centraal Station","ticketUrl":"https://www.ns.nl/en","pdfUrl":"tickets/0627-train-ede-wageningen.pdf"},{"time":"08:50","text":"抵達 Ede-Wageningen，等候 Bus 108（週六首班 09:09）","cat":"transport","fixed":false,"mapQuery":"Ede-Wageningen Station","ticketUrl":""},{"time":"09:09","text":"搭 Bus 108 往 Apeldoorn → Otterlo Rotonde 下車（約17分鐘）","cat":"transport","fixed":false,"mapQuery":"Ede-Wageningen Station bus stop","ticketUrl":""},{"time":"09:30","text":"抵達 De Hoge Veluwe 國家公園入口，掃公園票入場（E-ticket: 2621042266）","cat":"transport","fixed":true,"mapQuery":"De Hoge Veluwe National Park Otterlo entrance","ticketUrl":"","pdfUrl":"tickets/0627-hogeveluwe-park.pdf"},{"time":"09:35","text":"🚲 借免費白色自行車，騎車穿梭森林、沙丘、荒野探索公園","cat":"adv","fixed":false,"mapQuery":"De Hoge Veluwe National Park bicycle workshop","ticketUrl":""},{"time":"11:00","text":"🎨 Kröller-Müller Museum — 梵谷第二大典藏90幅＋現代藝術｜美術館票：11490100276243","cat":"sight","fixed":true,"mapQuery":"Kröller-Müller Museum Houtkampweg 6 Otterlo","ticketUrl":"https://krollermuller.nl/en/visit","pdfUrl":"tickets/0627-krollermuller.pdf"},{"time":"13:30","text":"Park Restaurant 午餐（廚房10:30開）","cat":"food","fixed":false,"mapQuery":"Kröller-Müller Museum restaurant","ticketUrl":""},{"time":"14:30","text":"🗿 戶外雕塑公園 Sculpture Garden — Rodin、Giacometti、Mondrian 等160件，全歐最大！","cat":"sight","fixed":false,"mapQuery":"Kröller-Müller Museum sculpture garden","ticketUrl":""},{"time":"16:30","text":"🚲 繼續騎車探索公園 — Jachthuis Sint Hubertus 獵莊（Art Deco建築）或沙丘區","cat":"adv","fixed":false,"mapQuery":"Jachthuis Sint Hubertus De Hoge Veluwe","ticketUrl":""},{"time":"18:30","text":"還車，搭 Bus 108 回 Ede-Wageningen（每小時一班）","cat":"transport","fixed":false,"mapQuery":"Otterlo Rotonde bus stop","ticketUrl":""},{"time":"19:00","text":"Ede-Wageningen 搭火車回 Rotterdam Centraal（轉 Utrecht，約1h15m）","cat":"transport","fixed":false,"mapQuery":"Ede-Wageningen Station","ticketUrl":"https://www.ns.nl/en"},{"time":"20:30","text":"抵達鹿特丹","cat":"transport","fixed":false,"mapQuery":"Rotterdam Centraal Station","ticketUrl":""}]},{"activities":[{"time":"09:30","text":"Rotterdam Centraal 出發 → Den Haag Centraal（約25分鐘，NS火車，週日 off-peak）","cat":"transport","fixed":false,"mapQuery":"Rotterdam Centraal Station","ticketUrl":"https://www.ns.nl/en","pdfUrl":"tickets/0628-train-denhaag.pdf"},{"time":"10:00","text":"莫瑞泰斯美術館 Mauritshuis — 維梅爾《戴珍珠耳環的少女》、林布蘭等大師作品","cat":"sight","fixed":false,"mapQuery":"Mauritshuis Den Haag","ticketUrl":"https://www.mauritshuis.nl/en/your-visit/tickets/","pdfUrl":"tickets/0628-mauritshuis.pdf"},{"time":"12:30","text":"海牙市中心午餐","cat":"food","fixed":false,"mapQuery":"Den Haag city center restaurants","ticketUrl":""},{"time":"14:00","text":"埃舍爾博物館 Escher in het Paleis（選擇性）— 視覺錯覺藝術，超有趣","cat":"sight","fixed":false,"mapQuery":"Escher in het Paleis Den Haag","ticketUrl":"https://www.escherinhetpaleis.nl/","pdfUrl":"tickets/0628-escher.pdf"},{"time":"16:00","text":"Scheveningen 海灘散步（海牙海邊，電車約20分鐘）","cat":"adv","fixed":false,"mapQuery":"Scheveningen Beach Den Haag","ticketUrl":""},{"time":"18:30","text":"搭火車回鹿特丹（約25分鐘）","cat":"transport","fixed":false,"mapQuery":"Den Haag Centraal Station","ticketUrl":"https://www.ns.nl/en"}]},{"activities":[{"time":"19:30","text":"Movement Class — Ashley & Domenik（Dansateliers, s-Gravendijkwal 58-A）｜開門19:30/上課20:00/結束21:30｜票號 ST4604602485983","cat":"dance","fixed":true,"mapQuery":"Dansateliers 's-Gravendijkwal 58 Rotterdam","ticketUrl":"","pdfUrl":"tickets/0629-dansateliers-movement.pdf"}]}],"bru":[{"activities":[{"time":"19:10","text":"EC 9260｜Rotterdam Centraal 出發 → Bruxelles-Midi（2h7m，直達）｜PNR: QXFGLCM","cat":"transport","fixed":true,"mapQuery":"Rotterdam Centraal Station","ticketUrl":"","pdfUrl":"tickets/0630-train-ec9260.pdf"},{"time":"21:17","text":"抵達 Bruxelles-Midi，前往住處安頓","cat":"transport","fixed":true,"mapQuery":"Brussels Midi Station","ticketUrl":""}]},{"activities":[{"time":"11:00","text":"🎨 WIELS 當代藝術中心 — 啤酒廠改建｜Lutz Bacher「Burning the Days」＋群展「On Debt」＋「Call me gravity」｜€12｜開放11:00-18:00｜訂位代號 TRW3DJBY8","cat":"sight","fixed":true,"mapQuery":"WIELS Avenue Van Volxem 354 Brussels","ticketUrl":"https://wiels.org/en","pdfUrl":"tickets/0701-wiels.pdf"}]},{"activities":[{"time":"19:00","text":"🎤 BTS WORLD TOUR 'ARIRANG' — King Baudouin Stadium（地鐵2號線 Heysel 站）","cat":"night","fixed":true,"mapQuery":"King Baudouin Stadium Brussels","ticketUrl":"","pdfUrl":"tickets/0702-bts-arirang.pdf"}]},{"activities":[]},{"activities":[]},{"activities":[{"time":"19:30","text":"TIC TAC Contact Improv Jam — 引導開場 14:00，CI Jam 15:00–18:00","cat":"dance","fixed":false,"mapQuery":"Tictac Art Centre Brussels Rue Emile Carpentier 34","ticketUrl":"https://tictacartcentre.com/event-category/tictac-classes/","pdfUrl":"tickets/0705-tictac-cijam.pdf"}]},{"activities":[]},{"activities":[]},{"activities":[]},{"activities":[{"time":"06:00","text":"布魯塞爾中央站出發往布魯日（車程約55分鐘）","cat":"transport","fixed":false,"mapQuery":"Brussels Central Station","ticketUrl":"https://www.belgiantrain.be/en"},{"time":"07:00","text":"抵達布魯日 Bruges","cat":"transport","fixed":false,"mapQuery":"Bruges Train Station","ticketUrl":""},{"time":"09:00","text":"De Halve Maan 半月啤酒廠 — Classic Tour 導覽€16，屋頂360°景觀＋1杯啤酒，約45分鐘（⚠️ 220階樓梯，穿舒適鞋！）","cat":"food","fixed":false,"mapQuery":"De Halve Maan Brewery Bruges","ticketUrl":"https://www.halvemaan.be/en/visit/brewery","pdfUrl":"tickets/0709-halvemaan.pdf"},{"time":"11:00","text":"布魯日老城漫步 — 市集廣場、鐘樓、運河","cat":"sight","fixed":false,"mapQuery":"Markt Bruges Belgium","ticketUrl":""},{"time":"13:00","text":"午餐 — 老城區比利時燉牛肉或薯條","cat":"food","fixed":false,"mapQuery":"restaurants Markt Bruges","ticketUrl":""},{"time":"15:00","text":"運河遊船 Boat Tour","cat":"sight","fixed":false,"mapQuery":"Bruges canal boat tour","ticketUrl":"","pdfUrl":"tickets/0709-bruges-boat.pdf"},{"time":"21:00","text":"搭火車回布魯塞爾（末班 23:22）","cat":"transport","fixed":false,"mapQuery":"Bruges Train Station","ticketUrl":"https://www.belgiantrain.be/en"},{"time":"22:00","text":"抵達布魯塞爾中央站","cat":"transport","fixed":false,"mapQuery":"Brussels Central Station","ticketUrl":""}]},{"activities":[{"time":"10:00","text":"🎨 比利時皇家美術館 — Old Masters Museum（15-18世紀：布勒哲爾、魯本斯、林布蘭等）｜含 Magritte Museum 雙館聯票 €20｜票號 KM5184393731180051","cat":"sight","fixed":true,"mapQuery":"Royal Museums of Fine Arts of Belgium Rue de la Régence 3 Brussels","ticketUrl":"https://www.fine-arts-museum.be/en/visit","pdfUrl":"tickets/0710-oldmasters-magritte.pdf"},{"time":"13:00","text":"🎨 馬格利特美術館 Magritte Museum — 230+件超現實主義作品、檔案、廣告海報｜與上方同一張聯票","cat":"sight","fixed":false,"mapQuery":"Magritte Museum Place Royale 1 Brussels","ticketUrl":"https://www.fine-arts-museum.be/en/visit","pdfUrl":"tickets/0710-oldmasters-magritte.pdf"}]},{"activities":[]},{"activities":[{"time":"","text":"布魯塞爾自由日 — 多留一晚（隔天 7/13 才搭 OUIGO 前往巴黎）","cat":"adv","fixed":false,"mapQuery":"Brussels Belgium","ticketUrl":""}]},{"activities":[]}],"par":[{"activities":[{"time":"07:37","text":"OUIGO｜Bruxelles-Midi (Brussel-Zuid) 出發 → Paris Nord（直達，2h58m）｜€22｜參考編號：MAKGWH","cat":"transport","fixed":true,"mapQuery":"Brussels Midi Station","ticketUrl":"","pdfUrl":"tickets/0713-train-ouigo.pdf"},{"time":"","text":"⚠️ 出發前先上 SNCF Connect「我的訂單」加購大行李 €5（現場才付要 €20）｜OUIGO 免費僅含 55×35×25cm 隨身箱","cat":"transport","fixed":false,"mapQuery":"","ticketUrl":"https://www.sncf-connect.com/en-en/"},{"time":"10:35","text":"抵達 Paris Gare du Nord — 辦 Navigo Découverte 卡（€5）＋加值週票（€32.40）","cat":"transport","fixed":true,"mapQuery":"Paris Gare du Nord","ticketUrl":""},{"time":"11:00","text":"搭 RER B → Saint-Michel Notre-Dame 站（約10分鐘）","cat":"transport","fixed":false,"mapQuery":"Saint-Michel Notre-Dame RER Station Paris","ticketUrl":""},{"time":"11:30","text":"抵達住處 — 6 Place Saint-Michel 🎉","cat":"transport","fixed":false,"mapQuery":"Place Saint-Michel Paris","ticketUrl":""},{"time":"21:00","text":"🎆 消防員舞會 Bal des Pompiers — 免費入場（Caserne Montmartre 或 Caserne Bitche）","cat":"night","fixed":false,"mapQuery":"Caserne Montmartre Paris 12 rue Carpeaux","ticketUrl":""}]},{"activities":[{"time":"","text":"🇫🇷 法國國慶日 — 香榭麗舍大道閱兵（10:00起）","cat":"sight","fixed":false,"mapQuery":"Champs-Élysées Paris","ticketUrl":""},{"time":"19:00","text":"La Félicità — 超大義式食堂，巴黎13區（週二 08:30–00:00）","cat":"food","fixed":false,"mapQuery":"La Felicita 5 Parv Alan Turing Paris 13","ticketUrl":""}]},{"activities":[{"time":"11:00","text":"Pinault Collection 皮諾美術館（Bourse de Commerce）— 含 Fujiko Nakaya 霧雕塑裝置｜€15","cat":"sight","fixed":false,"mapQuery":"Bourse de Commerce 2 Rue de Viarmes Paris","ticketUrl":"https://www.pinaultcollection.com/en/boursedecommerce","pdfUrl":"tickets/0715-pinault.pdf"}]},{"activities":[{"time":"12:00","text":"Danse contemporaine — Peter Goss（當代舞，12:00–14:00）｜Studio Biped, Micadanses, 16 rue Geoffroy l'Asnier｜現場付費 €20","cat":"dance","fixed":false,"mapQuery":"Micadanses 16 rue Geoffroy l'Asnier 75004 Paris","ticketUrl":"https://micadanses.com"}]},{"activities":[{"time":"11:00","text":"Episode — 2區 Rue Tiquetonne，平價挖寶（開到 20:00）","cat":"shop","fixed":false,"mapQuery":"Episode 12 Rue Tiquetonne Paris","ticketUrl":""},{"time":"13:00","text":"Kiliwatch — 同街64號，設計孤品（用力翻！）","cat":"shop","fixed":false,"mapQuery":"Kiliwatch 64 Rue Tiquetonne Paris","ticketUrl":""},{"time":"15:00","text":"步行15分鐘 → Thanx God I'm a V.I.P. — 10區 Rue de Lancry，70年代洋裝＋老絲巾（開到 20:00）","cat":"shop","fixed":false,"mapQuery":"Thanx God I'm a VIP 12 Rue de Lancry Paris","ticketUrl":""}]},{"activities":[{"time":"12:00","text":"Celia Darling Vintage — 9區 Rue Henry Monnier，飾品CP值最高（12:00–19:00）","cat":"shop","fixed":false,"mapQuery":"Celia Darling 5 Rue Henry Monnier Paris 9","ticketUrl":""}]},{"activities":[]},{"activities":[{"time":"18:30","text":"Contempo par Manon Pierre — Authentic Dance Company（當代舞，18:30–20:00）｜Micadanses Studio Noces, 20 Rue Geoffroy l'Asnier｜€15 已購票｜票號 191500184｜門碼 2470・studio 1407","cat":"dance","fixed":false,"mapQuery":"Micadanses 20 Rue Geoffroy l'Asnier 75004 Paris","ticketUrl":"https://www.helloasso.com","pdfUrl":"tickets/0720-micadanses-contempo.pdf"}]},{"activities":[]},{"activities":[{"time":"11:00","text":"出發前往戴高樂機場 (RER B，約35分鐘，Saint-Michel直達CDG)","cat":"transport","fixed":true,"mapQuery":"Paris Charles de Gaulle Airport","ticketUrl":""},{"time":"14:40","text":"✈️ KE5902｜巴黎戴高樂 CDG 2E航廈 出發 → 首爾仁川 ICN（7/23 09:35 抵達，第2航廈）｜經濟艙｜電腦代號：F3POQV","cat":"transport","fixed":true,"mapQuery":"Paris Charles de Gaulle Airport Terminal 2E","ticketUrl":"","pdfUrl":"tickets/0722-flight-cdg-icn.pdf"}]},{"activities":[{"time":"09:35","text":"抵達首爾仁川 ICN 第2航廈，等候轉機","cat":"transport","fixed":true,"mapQuery":"Incheon International Airport Terminal 2","ticketUrl":""},{"time":"16:10","text":"✈️ KE2027｜首爾仁川 ICN 第2航廈 出發 → 桃園 TPE（17:50 抵達，第1航廈）｜經濟艙｜免費行李1件","cat":"transport","fixed":true,"mapQuery":"Incheon International Airport Terminal 2","ticketUrl":"","pdfUrl":"tickets/0723-flight-icn-tpe.pdf"},{"time":"17:50","text":"抵達桃園國際機場 TPE 第1航廈 — 回到家 🎉","cat":"transport","fixed":true,"mapQuery":"Taoyuan International Airport Terminal 1","ticketUrl":""}]}]};
+let budget={"limit":1163,"expenses":[{"amount":25,"desc":"梵谷博物館 Van Gogh Museum｜票號：771461314094463570","cat":"sight","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":13.85,"desc":"De Hoge Veluwe 國家公園 Day Pass｜E-ticket：2621042266","cat":"sight","city":"鹿特丹","date":"2026-06-27"},{"amount":13.9,"desc":"Kröller-Müller Museum Day Ticket｜票號：11490100276243","cat":"sight","city":"鹿特丹","date":"2026-06-27"},{"amount":17.85,"desc":"EC 9260｜Rotterdam Centraal → Bruxelles-Midi｜PNR: QXFGLCM｜6/30 19:10","cat":"transport","city":"鹿特丹","date":"2026-06-30"},{"amount":22,"desc":"OUIGO Train Classique｜Brussel-Zuid → Paris Nord｜參考編號：MAKGWH｜7/13 07:37","cat":"transport","city":"布魯塞爾","date":"2026-07-13"},{"amount":10,"desc":"Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56892｜6/24","cat":"sight","city":"鹿特丹","date":"2026-06-24"},{"amount":10,"desc":"Conny Janssen Danst — Open Class 當代舞 Merel Lammers｜票號：56853｜6/25","cat":"sight","city":"鹿特丹","date":"2026-06-25"},{"amount":10,"desc":"Conny Janssen Danst — Open Class 芭蕾 Mariko Shimoda｜票號：56912｜6/26","cat":"sight","city":"鹿特丹","date":"2026-06-26"},{"amount":4.16,"desc":"NS Sprinter｜Rotterdam Centraal → Den Haag Centraal｜訂單：E544147620｜6/28 09:06","cat":"transport","city":"鹿特丹","date":"2026-06-28"},{"amount":16.5,"desc":"NS 火車｜Rotterdam → Ede-Wageningen 去程｜6/27","cat":"transport","city":"鹿特丹","date":"2026-06-27"},{"amount":24,"desc":"Mauritshuis + Prince William V Gallery｜票號：771192168523496551｜6/28 10:00","cat":"sight","city":"鹿特丹","date":"2026-06-28"},{"amount":14.5,"desc":"Escher in The Palace｜票號：774213626626760125｜有效期一年（不限日期）","cat":"sight","city":"鹿特丹","date":"2026-06-06"},{"amount":7.5,"desc":"Dansateliers ARK Movement Class — Majon van der Schot｜票號：ST1760381373351｜6/24 20:00","cat":"dance","city":"鹿特丹","date":"2026-06-24"},{"amount":5,"desc":"Dansateliers Movement Class — Ashley & Domenik｜票號：ST4604602485983｜6/29 20:00","cat":"dance","city":"鹿特丹","date":"2026-06-29"},{"amount":16,"desc":"De Halve Maan Classic Tour ENGLISH｜訂單：6850941｜7/9 13:30","cat":"food","city":"布魯塞爾","date":"2026-07-09"},{"amount":20,"desc":"比利時皇家美術館 Old Masters + Magritte｜票號：KM5184393731180051｜7/10 10:00","cat":"sight","city":"布魯塞爾","date":"2026-07-10"},{"amount":12,"desc":"WIELS 當代藝術中心｜訂位代號 TRW3DJBY8｜7/1 11:00","cat":"sight","city":"布魯塞爾","date":"2026-07-01"},{"amount":15,"desc":"Pinault Collection 皮諾美術館（Bourse de Commerce）｜7/15","cat":"sight","city":"巴黎","date":"2026-07-15"},{"amount":15,"desc":"Contempo par Manon Pierre — Authentic Dance Company（Micadanses）｜票號 191500184｜7/20 18:30","cat":"dance","city":"巴黎","date":"2026-07-20"},{"amount":7.1,"desc":"火車","cat":"transport","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":16,"desc":"寄放行李","cat":"other","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":3.48,"desc":"早餐","cat":"food","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":1.87,"desc":"咖啡","cat":"food","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":21,"desc":"唱片","cat":"food","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":23.5,"desc":"Lunch","cat":"food","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":4.9,"desc":"咖啡","cat":"food","city":"阿姆斯特丹","date":"2026-06-24"},{"amount":20.2,"desc":"火車","cat":"transport","city":"阿姆斯特丹","date":"2026-06-23"},{"amount":1.4,"desc":"捷運","cat":"transport","city":"鹿特丹","date":"2026-06-24"},{"amount":4.9,"desc":"咖啡","cat":"food","city":"鹿特丹","date":"2026-06-24"},{"amount":10.21,"desc":"Supermarkets","cat":"food","city":"鹿特丹","date":"2026-06-25"},{"amount":3.3,"desc":"捷運來回","cat":"food","city":"鹿特丹","date":"2026-06-25"}]};
+let pending=[{"desc":"火車 Ede-Wageningen→Rotterdam 回程（6/27 現場購票・估）","city":"荷蘭","amount":16.5,"url":"https://www.ns.nl/en"},{"desc":"Bus 108 Ede↔Otterlo 來回（6/27 現場購票・估）","city":"荷蘭","amount":8,"url":""},{"desc":"NS 火車 Den Haag→Rotterdam 回程（6/28 現場購票）","city":"荷蘭","amount":4.16,"url":"https://www.ns.nl/en"},{"desc":"TIC TAC Contact Improv Jam（7/5 現場付）","city":"布魯塞爾","amount":15,"url":"https://tictacartcentre.com/event-category/tictac-classes/"},{"desc":"OUIGO 大行李加購（7/13 出發前線上加購較省）","city":"布魯塞爾","amount":5,"url":"https://www.sncf-connect.com/en-en/"},{"desc":"火車 Brussels↔Bruges 來回（7/9 現場購票・估）","city":"布魯塞爾","amount":32,"url":"https://www.belgiantrain.be/en"},{"desc":"Danse contemporaine Peter Goss（7/16 現場付）","city":"巴黎","amount":20,"url":"https://micadanses.com"},{"desc":"巴黎市區散票 7/20-7/21（約6趟 ×€2.55・估）","city":"巴黎","amount":15.3,"url":"https://www.bonjour-ratp.fr/en/"},{"desc":"RER B → CDG 機場票 Paris Region↔Airports（7/22）","city":"巴黎","amount":14,"url":"https://www.bonjour-ratp.fr/en/titres-tarifs/ticket-paris-region-aeroports/"},{"desc":"Navigo Découverte 卡＋週票（7/13 起，僅涵蓋至7/19）","city":"巴黎","amount":37.4,"url":"https://www.navigo.fr"}];
 let active='ams';
 function resetAll(){if(!confirm('確定要重置所有資料嗎？此操作無法復原。'))return;localStorage.removeItem(STORAGE_KEY);location.reload();}
 function getDPR(){
@@ -838,5 +830,6 @@ loadData();
 renderTabs();
 renderSec();
 </script>
-</body>
-</html>
+
+
+</body></html>
