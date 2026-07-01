@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -905,7 +906,7 @@ async function refreshPdfButtons(){
 const STORAGE_KEY = 'europe_trip_2026';
 // 每次由 Claude 更新 HTML 內建行程時，這個版本號會改變。
 // 開啟時若瀏覽器存的版本與此不符，代表 HTML 內容較新 → 以 HTML 為準（捨棄舊的本機暫存）。
-const DATA_VERSION = '2026-06-30-orsayprice';
+const DATA_VERSION = '2026-06-30-doctype';
 
 function saveData() {
   try {
@@ -976,8 +977,8 @@ sw = function(id) { _sw(id); saveData(); };
 
 // ── 匯出下載 ──────────────────────────────────────────────────
 function exportHTML() {
-  // Get the original HTML source
-  const originalHTML = document.documentElement.outerHTML;
+  // Get the original HTML source (加上 DOCTYPE 確保下載檔在瀏覽器以標準模式渲染)
+  const originalHTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 
   // Serialize current live data
   const exportState = JSON.stringify(state);
